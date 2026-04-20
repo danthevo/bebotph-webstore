@@ -16,3 +16,4 @@ webstore/.env*.local
 # General
 .DS_Store
 *.log
+.gstack/

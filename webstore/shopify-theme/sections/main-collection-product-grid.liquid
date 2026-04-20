@@ -1,0 +1,234 @@
+{%- liquid
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+  assign columns_mobile = section.settings.columns_mobile | default: 2
+-%}
+
+<section
+  class="main-collection"
+  id="MainCollection-{{ section.id }}"
+  aria-label="{{ collection.title | escape }}"
+>
+  <div class="container">
+
+    {%- comment -%} Collection header {%- endcomment -%}
+    <header class="collection-header">
+      <h1 class="collection-header__title">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="collection-header__description rte">
+          {{ collection.description }}
+        </div>
+      {%- endif -%}
+      <p class="collection-header__count">
+        {{ 'collections.general.items_count' | t: count: collection.products_count | default: collection.products_count | append: ' items' }}
+      </p>
+    </header>
+
+    {%- comment -%} Toolbar: filter + sort {%- endcomment -%}
+    <div class="collection-toolbar">
+
+      {%- comment -%} Filter by tags {%- endcomment -%}
+      {%- if section.settings.enable_filtering and collection.all_tags.size > 0 -%}
+        <div class="collection-filters" id="CollectionFilters">
+          <span class="collection-filters__label">Filter:</span>
+          <div class="collection-filters__tags">
+            <a
+              href="{{ collection.url }}"
+              class="collection-filters__tag{% unless current_tags %} collection-filters__tag--active{% endunless %}"
+            >
+              All
+            </a>
+            {%- for tag in collection.all_tags -%}
+              {%- unless tag contains '__' -%}
+                {%- if current_tags contains tag -%}
+                  <a
+                    href="{{ collection.url }}/{{ current_tags | join: '+' | replace: tag, '' | remove_first: '+' | remove_last: '+' }}"
+                    class="collection-filters__tag collection-filters__tag--active"
+                    aria-current="true"
+                  >
+                    {{ tag }}
+                  </a>
+                {%- else -%}
+                  <a
+                    href="{{ collection.url }}/{{ current_tags | join: '+' }}{% if current_tags.size > 0 %}+{% endif %}{{ tag | handle }}"
+                    class="collection-filters__tag"
+                  >
+                    {{ tag }}
+                  </a>
+                {%- endif -%}
+              {%- endunless -%}
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Sort by {%- endcomment -%}
+      {%- if section.settings.enable_sorting -%}
+        <div class="collection-sort">
+          <label for="CollectionSortBy" class="collection-sort__label">
+            {{ 'collections.sorting.title' | t | default: 'Sort by' }}
+          </label>
+          <select
+            id="CollectionSortBy"
+            name="sort_by"
+            class="form-select collection-sort__select"
+            aria-describedby="a11y-collection-sort-by"
+          >
+            {%- for option in collection.sort_options -%}
+              <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>
+                {{ option.name }}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Product grid {%- endcomment -%}
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      {%- if collection.products.size > 0 -%}
+        <ul
+          class="product-grid product-grid--{{ columns_desktop }}-col product-grid--mobile-{{ columns_mobile }}-col"
+          id="CollectionProductGrid"
+          role="list"
+          data-id="{{ section.id }}"
+        >
+          {%- for product in collection.products -%}
+            <li class="product-grid__item">
+              {%- render 'product-card',
+                product: product,
+                lazy_load: forloop.index > 4
+              -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+
+        {%- comment -%} Pagination {%- endcomment -%}
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagination" aria-label="{{ 'general.pagination.label' | t | default: 'Pagination' }}">
+            {%- if paginate.previous -%}
+              <a
+                href="{{ paginate.previous.url }}"
+                class="pagination__item pagination__item--prev"
+                aria-label="{{ 'general.pagination.previous' | t | default: 'Previous page' }}"
+              >
+                {%- render 'icon', icon: 'chevron-right' -%}
+                {{ 'general.pagination.previous' | t | default: 'Previous' }}
+              </a>
+            {%- endif -%}
+
+            <ol class="pagination__pages" role="list">
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <li>
+                    <a href="{{ part.url }}" class="pagination__page">{{ part.title }}</a>
+                  </li>
+                {%- else -%}
+                  <li>
+                    {%- if part.title == paginate.current_page -%}
+                      <span class="pagination__page pagination__page--current" aria-current="page">{{ part.title }}</span>
+                    {%- else -%}
+                      <span class="pagination__page pagination__page--ellipsis">{{ part.title }}</span>
+                    {%- endif -%}
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ol>
+
+            {%- if paginate.next -%}
+              <a
+                href="{{ paginate.next.url }}"
+                class="pagination__item pagination__item--next"
+                aria-label="{{ 'general.pagination.next' | t | default: 'Next page' }}"
+              >
+                {{ 'general.pagination.next' | t | default: 'Next' }}
+                {%- render 'icon', icon: 'chevron-right' -%}
+              </a>
+            {%- endif -%}
+          </nav>
+        {%- endif -%}
+
+      {%- else -%}
+        <div class="collection-empty">
+          <p class="collection-empty__message">
+            {{ 'collections.general.no_matches' | t | default: 'No products found' }}
+          </p>
+          {%- if current_tags -%}
+            <a href="{{ collection.url }}" class="btn btn--secondary">
+              {{ 'collections.general.clear_filters' | t | default: 'Clear filters' }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    {%- endpaginate -%}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection — Product Grid",
+  "tag": "section",
+  "class": "section-main-collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Products per page",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2 columns" },
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" },
+        { "value": "5", "label": "5 columns" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "default": "2",
+      "options": [
+        { "value": "1", "label": "1 column" },
+        { "value": "2", "label": "2 columns" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable tag filtering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Enable sort by"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Product image ratio",
+      "default": "portrait",
+      "options": [
+        { "value": "portrait", "label": "Portrait (3:4)" },
+        { "value": "square", "label": "Square (1:1)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection — Product Grid"
+    }
+  ]
+}
+{% endschema %}

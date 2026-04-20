@@ -1,0 +1,80 @@
+{%- comment -%}
+  Price Snippet
+  Accepts:
+    - product {Object} Required. The product object (or a variant).
+    - variant {Object} Optional. A specific variant to show price for. Overrides product.
+    - show_badges {Boolean} Optional. Show sale/sold out badge inline. Default: false.
+    - use_variant {Boolean} Optional. Use the selected_or_first_available_variant. Default: false.
+{%- endcomment -%}
+
+{%- liquid
+  if variant
+    assign target = variant
+    assign compare_at_price = variant.compare_at_price
+    assign price = variant.price
+    assign available = variant.available
+  elsif use_variant
+    assign target = product.selected_or_first_available_variant
+    assign compare_at_price = target.compare_at_price
+    assign price = target.price
+    assign available = target.available
+  else
+    assign target = product
+    assign compare_at_price = product.compare_at_price
+    assign price = product.price
+    assign available = product.available
+  endif
+
+  assign on_sale = false
+  if compare_at_price > price
+    assign on_sale = true
+  endif
+
+  if product.price_varies
+    assign price = product.price_min
+    assign compare_at_price = product.compare_at_price_max
+  endif
+-%}
+
+<div class="price{% if on_sale %} price--on-sale{% endif %}{% unless available %} price--sold-out{% endunless %}">
+  <div class="price__container">
+
+    {%- if available == false -%}
+      <span class="price__sold-out">
+        {{ 'products.product.sold_out' | t | default: 'Sold out' }}
+      </span>
+
+    {%- elsif on_sale -%}
+      <span class="price__sale" aria-label="{{ 'products.product.price.sale_price' | t | default: 'Sale price' }}">
+        {%- if product.price_varies -%}
+          {{ 'products.product.price.from_price_html' | t: price: price | money_with_currency | default: price | money_with_currency }}
+        {%- else -%}
+          {{ price | money_with_currency }}
+        {%- endif -%}
+      </span>
+      <s class="price__compare" aria-label="{{ 'products.product.price.regular_price' | t | default: 'Regular price' }}">
+        {{ compare_at_price | money_with_currency }}
+      </s>
+
+      {%- if show_badges -%}
+        {%- liquid
+          assign discount_pct = compare_at_price | minus: price
+          assign discount_pct = discount_pct | times: 100 | divided_by: compare_at_price
+        -%}
+        <span class="price__badge price__badge--sale" aria-label="{{ 'products.product.price.save' | t | default: 'Save' }} {{ discount_pct }}%">
+          -{{ discount_pct }}%
+        </span>
+      {%- endif -%}
+
+    {%- else -%}
+      <span class="price__regular" aria-label="{{ 'products.product.price.regular_price' | t | default: 'Price' }}">
+        {%- if product.price_varies -%}
+          {{ 'products.product.price.from_price_html' | t: price: price | money_with_currency | default: 'From ' | append: price | money_with_currency }}
+        {%- else -%}
+          {{ price | money_with_currency }}
+        {%- endif -%}
+      </span>
+    {%- endif -%}
+
+  </div>
+</div>

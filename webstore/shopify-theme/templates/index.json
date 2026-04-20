@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "promo-banner": {
+      "type": "promo-banner",
+      "settings": {
+        "show_banner": true,
+        "text": "FREE SHIPPING ON ORDERS OVER $75 ✦ NEW DROP: SUMMER Y2K COLLECTION ✦ USE CODE BEBOT15 FOR 15% OFF ✦",
+        "background_color": "#e8b4c8",
+        "text_color": "#0a0a0a"
+      }
+    },
+    "hero-editorial": {
+      "type": "hero-editorial",
+      "settings": {
+        "eyebrow_text": "SS25 COLLECTION",
+        "heading": "Dress the Story.",
+        "subheading": "Y2K reborn. Streetwear with soul.",
+        "button_label": "Shop Now",
+        "button_url": "/collections/all",
+        "button_secondary_label": "View Lookbook",
+        "button_secondary_url": "/collections/lookbook",
+        "overlay_opacity": 40,
+        "height": "full",
+        "text_alignment": "left"
+      }
+    },
+    "featured-collection-editorial": {
+      "type": "featured-collection-editorial",
+      "settings": {
+        "title": "New Arrivals",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "show_view_all": true,
+        "view_all_label": "View All New Arrivals"
+      }
+    }
+  },
+  "order": [
+    "promo-banner",
+    "hero-editorial",
+    "featured-collection-editorial"
+  ]
+}

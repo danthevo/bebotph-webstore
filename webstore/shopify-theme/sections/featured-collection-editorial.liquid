@@ -1,0 +1,150 @@
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign products_to_show = section.settings.products_to_show
+  assign columns = section.settings.columns_desktop
+-%}
+
+{%- if collection != blank or request.design_mode -%}
+  <section
+    class="featured-collection"
+    id="FeaturedCollection-{{ section.id }}"
+    aria-label="{{ section.settings.title | escape }}"
+  >
+    <div class="container">
+
+      {%- comment -%} Section header {%- endcomment -%}
+      {%- if section.settings.title != blank or section.settings.subtext != blank -%}
+        <div class="section-header section-header--with-link">
+          <div class="section-header__text">
+            {%- if section.settings.title != blank -%}
+              <h2 class="section-header__title">{{ section.settings.title }}</h2>
+            {%- endif -%}
+            {%- if section.settings.subtext != blank -%}
+              <p class="section-header__subtext">{{ section.settings.subtext }}</p>
+            {%- endif -%}
+          </div>
+          {%- if section.settings.show_view_all and collection != blank -%}
+            <a
+              href="{{ collection.url }}"
+              class="section-header__view-all"
+              aria-label="{{ section.settings.view_all_label | default: 'View all' }} {{ section.settings.title }}"
+            >
+              {{ section.settings.view_all_label | default: 'View all' }}
+              {%- render 'icon', icon: 'arrow-right' -%}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} Product grid {%- endcomment -%}
+      {%- if collection.products.size > 0 -%}
+        <ul
+          class="product-grid product-grid--{{ columns }}-col"
+          role="list"
+          aria-label="{{ section.settings.title | escape }}"
+        >
+          {%- for product in collection.products limit: products_to_show -%}
+            <li class="product-grid__item">
+              {%- render 'product-card',
+                product: product,
+                lazy_load: forloop.index > 2
+              -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- else -%}
+        {%- comment -%} Placeholder for theme editor / empty collection {%- endcomment -%}
+        <ul class="product-grid product-grid--{{ columns }}-col" role="list">
+          {%- for i in (1..products_to_show) -%}
+            <li class="product-grid__item">
+              <div class="product-card product-card--placeholder">
+                <div class="product-card__image-wrapper">
+                  {{ 'product-' | append: forloop.index | placeholder_svg_tag: 'product-card__placeholder-svg' }}
+                </div>
+                <div class="product-card__info">
+                  <p class="product-card__title">{{ 'onboarding.product_title' | t | default: 'Example Product' }}</p>
+                  <p class="product-card__price">$00.00</p>
+                </div>
+              </div>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- comment -%} View all link below grid (mobile-friendly) {%- endcomment -%}
+      {%- if section.settings.show_view_all and collection != blank -%}
+        <div class="featured-collection__footer">
+          <a href="{{ collection.url }}" class="btn btn--secondary">
+            {{ section.settings.view_all_label | default: 'View all' }}
+            {%- render 'icon', icon: 'arrow-right' -%}
+          </a>
+        </div>
+      {%- endif -%}
+
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "tag": "section",
+  "class": "section-featured-collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "text",
+      "id": "subtext",
+      "label": "Subtext",
+      "info": "Optional description below the heading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "label": "Products to show",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "default": "4",
+      "options": [
+        { "value": "2", "label": "2 columns" },
+        { "value": "3", "label": "3 columns" },
+        { "value": "4", "label": "4 columns" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' link"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "'View all' label",
+      "default": "View All"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}

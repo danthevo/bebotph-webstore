@@ -1,0 +1,225 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Bebot",
+    "theme_version": "1.0.0",
+    "theme_author": "Bebotph",
+    "theme_documentation_url": "https://bebotph.com",
+    "theme_support_url": "https://bebotph.com/pages/contact"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Page background",
+        "default": "#0a0a0a"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface / card background",
+        "default": "#141414"
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Primary text",
+        "default": "#f0ebe3"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Muted text",
+        "default": "#7a746e"
+      },
+      {
+        "type": "header",
+        "content": "Accent colors"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accent — soft pink",
+        "default": "#e8b4c8"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_hot",
+        "label": "Accent hot — hot pink",
+        "default": "#ff2d78"
+      },
+      {
+        "type": "color",
+        "id": "color_accent_chrome",
+        "label": "Accent chrome — silver",
+        "default": "#c8c8d4"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Gold / warm tan",
+        "default": "#c9a87c"
+      },
+      {
+        "type": "header",
+        "content": "Borders"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border color",
+        "default": "#242424"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Headings"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "label": "Heading font",
+        "default": "georgia_n4"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 80,
+        "max": 140,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading size scale",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Body"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "label": "Body font",
+        "default": "sans-serif_n4"
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "min": 85,
+        "max": 115,
+        "step": 5,
+        "unit": "%",
+        "label": "Body font size scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 20,
+        "unit": "px",
+        "label": "Max page width",
+        "default": 1280
+      },
+      {
+        "type": "range",
+        "id": "spacing_sections",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Vertical space between sections",
+        "default": 80
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "url",
+        "id": "social_instagram_url",
+        "label": "Instagram",
+        "info": "e.g. https://www.instagram.com/bebotph"
+      },
+      {
+        "type": "url",
+        "id": "social_tiktok_url",
+        "label": "TikTok",
+        "info": "e.g. https://www.tiktok.com/@bebotph"
+      },
+      {
+        "type": "url",
+        "id": "social_twitter_url",
+        "label": "Twitter / X",
+        "info": "e.g. https://twitter.com/bebotph"
+      },
+      {
+        "type": "url",
+        "id": "social_facebook_url",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "social_youtube_url",
+        "label": "YouTube"
+      },
+      {
+        "type": "url",
+        "id": "social_pinterest_url",
+        "label": "Pinterest"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "default": "drawer",
+        "options": [
+          { "value": "drawer", "label": "Drawer (slide-out)" },
+          { "value": "page",   "label": "Cart page" }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_note",
+        "label": "Show cart note",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon image",
+        "info": "32 x 32px .png or .ico recommended"
+      }
+    ]
+  }
+]

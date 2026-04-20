@@ -1,0 +1,86 @@
+{%- if section.settings.show_banner -%}
+  <div
+    class="promo-banner"
+    id="PromoBanner"
+    role="complementary"
+    aria-label="{{ 'sections.announcement_bar.label' | t | default: 'Announcement' }}"
+    style="
+      --promo-bg: {{ section.settings.background_color }};
+      --promo-color: {{ section.settings.text_color }};
+    "
+  >
+    <div class="promo-banner__track" aria-hidden="true">
+      {%- comment -%} Repeat content for seamless loop {%- endcomment -%}
+      <span class="promo-banner__content">{{ section.settings.text }}</span>
+      <span class="promo-banner__content" aria-hidden="true">{{ section.settings.text }}</span>
+      <span class="promo-banner__content" aria-hidden="true">{{ section.settings.text }}</span>
+    </div>
+
+    {%- comment -%} Accessible non-animated version for screen readers {%- endcomment -%}
+    <p class="visually-hidden">{{ section.settings.text }}</p>
+
+    {%- if section.settings.show_close -%}
+      <button
+        class="promo-banner__close"
+        aria-label="{{ 'accessibility.close_announcement' | t | default: 'Close announcement bar' }}"
+        id="PromoBannerClose"
+      >
+        {%- render 'icon', icon: 'close' -%}
+      </button>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Promo Banner",
+  "class": "section-promo-banner",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_banner",
+      "default": true,
+      "label": "Show promo banner"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Banner text",
+      "default": "FREE SHIPPING ON ORDERS OVER $75 ✦ NEW DROP: SUMMER Y2K COLLECTION ✦ USE CODE BEBOT15 FOR 15% OFF ✦"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#e8b4c8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "label": "Scroll speed",
+      "default": 25
+    },
+    {
+      "type": "checkbox",
+      "id": "show_close",
+      "default": false,
+      "label": "Show close button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo Banner"
+    }
+  ]
+}
+{% endschema %}

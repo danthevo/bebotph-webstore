@@ -1,0 +1,82 @@
+{
+  "sections": {
+    "main-product": {
+      "type": "main-product",
+      "blocks": {
+        "vendor": {
+          "type": "vendor",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "variant-picker": {
+          "type": "variant-picker",
+          "settings": {
+            "picker_type": "button"
+          }
+        },
+        "quantity-selector": {
+          "type": "quantity-selector",
+          "settings": {}
+        },
+        "buy-buttons": {
+          "type": "buy-buttons",
+          "settings": {
+            "show_dynamic_checkout": true
+          }
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "shipping-info": {
+          "type": "collapsible-tab",
+          "settings": {
+            "heading": "Shipping & Returns",
+            "content": "Free shipping on orders over $75. Standard delivery 5-7 business days. Express available at checkout. Returns accepted within 30 days of purchase."
+          }
+        },
+        "size-guide": {
+          "type": "collapsible-tab",
+          "settings": {
+            "heading": "Size Guide",
+            "content": "Bebot fits true to size. For an oversized look, size up one. Baby tees are intentionally cropped — size up if you prefer a relaxed fit."
+          }
+        }
+      },
+      "block_order": [
+        "vendor",
+        "title",
+        "price",
+        "variant-picker",
+        "quantity-selector",
+        "buy-buttons",
+        "description",
+        "shipping-info",
+        "size-guide"
+      ],
+      "settings": {
+        "enable_sticky_info": true
+      }
+    },
+    "you-may-also-like": {
+      "type": "featured-collection-editorial",
+      "settings": {
+        "title": "You May Also Like",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "show_view_all": false
+      }
+    }
+  },
+  "order": [
+    "main-product",
+    "you-may-also-like"
+  ]
+}

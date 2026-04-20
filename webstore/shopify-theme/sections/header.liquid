@@ -1,0 +1,225 @@
+{%- liquid
+  assign sticky_header = section.settings.sticky_header
+  assign show_search = section.settings.show_search
+  assign menu = section.settings.menu
+  assign logo_text = section.settings.logo_text | default: shop.name
+-%}
+
+<header
+  class="site-header{% if sticky_header %} site-header--sticky{% endif %}"
+  id="SiteHeader"
+  role="banner"
+>
+  <div class="site-header__inner container">
+
+    {%- comment -%} Mobile hamburger {%- endcomment -%}
+    <button
+      class="site-header__hamburger header-icon-btn"
+      aria-expanded="false"
+      aria-controls="MobileNav"
+      aria-label="{{ 'accessibility.open_menu' | t | default: 'Open navigation menu' }}"
+      id="HamburgerBtn"
+    >
+      {%- render 'icon', icon: 'hamburger' -%}
+    </button>
+
+    {%- comment -%} Logo {%- endcomment -%}
+    <a href="{{ routes.root_url }}" class="site-header__logo" aria-label="{{ shop.name }} — {{ 'general.home' | t | default: 'Home' }}">
+      {%- if section.settings.logo_image != blank -%}
+        {{
+          section.settings.logo_image
+          | image_url: width: 300
+          | image_tag:
+            class: 'site-header__logo-image',
+            loading: 'eager',
+            alt: shop.name,
+            widths: '120, 180, 240, 300'
+        }}
+      {%- else -%}
+        <span class="site-header__logo-text">{{ logo_text }}</span>
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Primary navigation {%- endcomment -%}
+    {%- if menu != blank -%}
+      <nav class="site-nav" role="navigation" aria-label="{{ 'general.navigation.main' | t | default: 'Main navigation' }}">
+        <ul class="site-nav__list" role="list">
+          {%- for link in linklists[menu].links -%}
+            <li class="site-nav__item{% if link.links.size > 0 %} site-nav__item--has-children{% endif %}">
+              <a
+                href="{{ link.url }}"
+                class="site-nav__link{% if link.active %} site-nav__link--active{% endif %}"
+                {%- if link.current %} aria-current="page"{% endif -%}
+              >
+                {{ link.title }}
+                {%- if link.links.size > 0 -%}
+                  {%- render 'icon', icon: 'chevron-down' -%}
+                {%- endif -%}
+              </a>
+
+              {%- if link.links.size > 0 -%}
+                <ul class="site-nav__dropdown" role="list" aria-label="{{ link.title }}">
+                  {%- for child_link in link.links -%}
+                    <li>
+                      <a
+                        href="{{ child_link.url }}"
+                        class="site-nav__dropdown-link{% if child_link.active %} site-nav__dropdown-link--active{% endif %}"
+                        {%- if child_link.current %} aria-current="page"{% endif -%}
+                      >
+                        {{ child_link.title }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- comment -%} Header icons: search + cart {%- endcomment -%}
+    <div class="header-icons" role="group" aria-label="{{ 'accessibility.header_utilities' | t | default: 'Header utilities' }}">
+
+      {%- if show_search -%}
+        <button
+          class="header-icon-btn header-icon-btn--search"
+          aria-expanded="false"
+          aria-controls="SearchDrawer"
+          aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
+          id="SearchToggleBtn"
+        >
+          {%- render 'icon', icon: 'search' -%}
+        </button>
+      {%- endif -%}
+
+      <a
+        href="{{ routes.cart_url }}"
+        class="header-icon-btn header-icon-btn--cart"
+        id="CartToggleBtn"
+        aria-label="{{ 'sections.cart.title' | t | default: 'Cart' }} ({{ cart.item_count }} {{ 'sections.cart.items_count' | t: count: cart.item_count | default: 'items' }})"
+        {%- if settings.cart_type == 'drawer' -%}
+          aria-expanded="false"
+          aria-controls="CartDrawer"
+          role="button"
+        {%- endif -%}
+      >
+        {%- render 'icon', icon: 'cart' -%}
+        <span
+          class="cart-count{% if cart.item_count == 0 %} cart-count--empty{% endif %}"
+          id="CartCount"
+          aria-hidden="true"
+        >
+          {{ cart.item_count }}
+        </span>
+      </a>
+
+    </div>
+  </div>
+</header>
+
+{%- comment -%} Mobile navigation drawer {%- endcomment -%}
+<div
+  id="MobileNav"
+  class="mobile-nav"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'general.navigation.main' | t | default: 'Navigation' }}"
+  aria-hidden="true"
+>
+  <div class="mobile-nav__header">
+    <a href="{{ routes.root_url }}" class="mobile-nav__logo">
+      {{ logo_text }}
+    </a>
+    <button
+      class="mobile-nav__close header-icon-btn"
+      aria-label="{{ 'accessibility.close' | t | default: 'Close menu' }}"
+      id="MobileNavClose"
+    >
+      {%- render 'icon', icon: 'close' -%}
+    </button>
+  </div>
+
+  <nav class="mobile-nav__nav" role="navigation" aria-label="{{ 'general.navigation.main' | t | default: 'Mobile navigation' }}">
+    <ul class="mobile-nav__list" role="list">
+      {%- if menu != blank -%}
+        {%- for link in linklists[menu].links -%}
+          <li class="mobile-nav__item">
+            <a
+              href="{{ link.url }}"
+              class="mobile-nav__link{% if link.active %} mobile-nav__link--active{% endif %}"
+            >
+              {{ link.title }}
+            </a>
+            {%- if link.links.size > 0 -%}
+              <ul class="mobile-nav__sub-list" role="list">
+                {%- for child_link in link.links -%}
+                  <li>
+                    <a href="{{ child_link.url }}" class="mobile-nav__sub-link">
+                      {{ child_link.title }}
+                    </a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      {%- endif -%}
+    </ul>
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image",
+      "info": "Leave blank to use logo text"
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo text",
+      "default": "BEBOT",
+      "info": "Shown when no logo image is set"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Custom logo width",
+      "default": 140
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "default": "main-menu",
+      "label": "Main navigation menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "default": true,
+      "label": "Show search icon"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "default": true,
+      "label": "Enable sticky header"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Header"
+    }
+  ]
+}
+{% endschema %}

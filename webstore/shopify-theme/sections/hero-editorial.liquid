@@ -1,0 +1,192 @@
+{%- liquid
+  assign hero_height = section.settings.height
+  assign text_alignment = section.settings.text_alignment | default: 'left'
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+-%}
+
+<section
+  class="hero-editorial hero-editorial--{{ hero_height }} hero-editorial--align-{{ text_alignment }}"
+  id="HeroEditorial-{{ section.id }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  {%- comment -%} Background image {%- endcomment -%}
+  <div class="hero-editorial__media">
+    {%- if section.settings.image != blank -%}
+      {{
+        section.settings.image
+        | image_url: width: 2000
+        | image_tag:
+          class: 'hero-editorial__bg-image',
+          loading: 'eager',
+          fetchpriority: 'high',
+          sizes: '100vw',
+          widths: '750, 1100, 1500, 1780, 2000',
+          alt: section.settings.heading
+      }}
+    {%- else -%}
+      <div class="hero-editorial__bg-placeholder"></div>
+    {%- endif -%}
+
+    {%- comment -%} Overlay gradient {%- endcomment -%}
+    <div
+      class="hero-editorial__overlay"
+      style="--overlay-opacity: {{ overlay_opacity }};"
+    ></div>
+  </div>
+
+  {%- comment -%} Hero content {%- endcomment -%}
+  <div class="hero-editorial__content container">
+    <div class="hero-editorial__text">
+
+      {%- if section.settings.eyebrow_text != blank -%}
+        <p class="hero-editorial__eyebrow">{{ section.settings.eyebrow_text }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.badge_text != blank -%}
+        <span class="hero-editorial__badge">{{ section.settings.badge_text }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h1 class="hero-editorial__heading">
+          {{ section.settings.heading }}
+        </h1>
+      {%- endif -%}
+
+      {%- if section.settings.subheading != blank -%}
+        <p class="hero-editorial__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank or section.settings.button_secondary_label != blank -%}
+        <div class="hero-editorial__buttons">
+          {%- if section.settings.button_label != blank -%}
+            <a
+              href="{{ section.settings.button_url | default: routes.all_products_collection_url }}"
+              class="btn btn--primary hero-editorial__btn"
+            >
+              {{ section.settings.button_label }}
+            </a>
+          {%- endif -%}
+          {%- if section.settings.button_secondary_label != blank -%}
+            <a
+              href="{{ section.settings.button_secondary_url | default: routes.all_products_collection_url }}"
+              class="btn btn--outline hero-editorial__btn"
+            >
+              {{ section.settings.button_secondary_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero — Editorial",
+  "tag": "section",
+  "class": "section-hero-editorial",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow_text",
+      "label": "Eyebrow text",
+      "default": "SS25 COLLECTION",
+      "info": "Small label above the heading"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "info": "Optional tag/badge (e.g. 'New Drop')"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Dress the Story."
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Y2K reborn. Streetwear with soul."
+    },
+    {
+      "type": "header",
+      "content": "Buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Primary button URL"
+    },
+    {
+      "type": "text",
+      "id": "button_secondary_label",
+      "label": "Secondary button label",
+      "default": "View Lookbook"
+    },
+    {
+      "type": "url",
+      "id": "button_secondary_url",
+      "label": "Secondary button URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Section height",
+      "default": "full",
+      "options": [
+        { "value": "full", "label": "Full viewport height" },
+        { "value": "large", "label": "Large (80vh)" },
+        { "value": "medium", "label": "Medium (60vh)" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Image overlay opacity",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero — Editorial"
+    }
+  ]
+}
+{% endschema %}

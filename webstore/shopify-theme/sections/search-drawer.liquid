@@ -1,0 +1,128 @@
+<div
+  id="SearchDrawer"
+  class="search-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'general.search.search' | t | default: 'Search' }}"
+  aria-hidden="true"
+  tabindex="-1"
+>
+  <div class="search-drawer__inner container">
+
+    <div class="search-drawer__header">
+      <h2 class="search-drawer__title visually-hidden">
+        {{ 'general.search.search' | t | default: 'Search' }}
+      </h2>
+      <button
+        class="search-drawer__close header-icon-btn"
+        aria-label="{{ 'accessibility.close_search' | t | default: 'Close search' }}"
+        id="SearchDrawerClose"
+      >
+        {%- render 'icon', icon: 'close' -%}
+      </button>
+    </div>
+
+    {%- comment -%} Search form {%- endcomment -%}
+    <form
+      action="{{ routes.search_url }}"
+      method="get"
+      class="search-drawer__form"
+      role="search"
+    >
+      <input type="hidden" name="type" value="product">
+      <div class="search-drawer__field">
+        <label for="SearchInput" class="visually-hidden">
+          {{ 'general.search.placeholder' | t | default: 'Search for styles, brands...' }}
+        </label>
+        <input
+          type="search"
+          id="SearchInput"
+          name="q"
+          class="search-drawer__input"
+          placeholder="{{ 'general.search.placeholder' | t | default: 'Search for styles, brands...' }}"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls="SearchPredictiveResults"
+          role="combobox"
+        >
+        <button type="submit" class="search-drawer__submit" aria-label="{{ 'general.search.search' | t | default: 'Search' }}">
+          {%- render 'icon', icon: 'search' -%}
+        </button>
+      </div>
+
+      {%- comment -%} Predictive results container (populated via JS) {%- endcomment -%}
+      <div
+        id="SearchPredictiveResults"
+        class="search-drawer__results"
+        role="listbox"
+        aria-label="{{ 'general.search.results' | t | default: 'Search results' }}"
+      ></div>
+    </form>
+
+    {%- comment -%} Trending/popular searches from schema blocks {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="search-drawer__trending">
+        <p class="search-drawer__trending-label">
+          {{ section.settings.trending_label | default: 'Trending searches' }}
+        </p>
+        <div class="search-drawer__tags">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'trending-search' and block.settings.term != blank -%}
+              <a
+                href="{{ routes.search_url }}?q={{ block.settings.term | url_param_escape }}&type=product"
+                class="search-tag"
+                {{ block.shopify_attributes }}
+              >
+                {{ block.settings.term }}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Search Drawer",
+  "blocks": [
+    {
+      "type": "trending-search",
+      "name": "Trending search term",
+      "settings": [
+        {
+          "type": "text",
+          "id": "term",
+          "label": "Search term",
+          "placeholder": "e.g. Baby Tees"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "trending_label",
+      "label": "Trending label",
+      "default": "Trending"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Search Drawer",
+      "blocks": [
+        { "type": "trending-search", "settings": { "term": "Baby Tees" } },
+        { "type": "trending-search", "settings": { "term": "Cargo" } },
+        { "type": "trending-search", "settings": { "term": "Von Dutch" } },
+        { "type": "trending-search", "settings": { "term": "Y2K Sets" } },
+        { "type": "trending-search", "settings": { "term": "Graphic Tees" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

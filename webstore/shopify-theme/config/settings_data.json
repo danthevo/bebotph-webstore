@@ -1,0 +1,28 @@
+{
+  "current": {
+    "color_background":    "#0a0a0a",
+    "color_surface":       "#141414",
+    "color_text":          "#f0ebe3",
+    "color_text_muted":    "#7a746e",
+    "color_accent":        "#e8b4c8",
+    "color_accent_hot":    "#ff2d78",
+    "color_accent_chrome": "#c8c8d4",
+    "color_gold":          "#c9a87c",
+    "color_border":        "#242424",
+    "type_header_font":    "georgia_n4",
+    "heading_scale":       100,
+    "type_body_font":      "sans-serif_n4",
+    "body_scale":          100,
+    "page_width":          1280,
+    "spacing_sections":    80,
+    "social_instagram_url": "https://www.instagram.com/bebotph",
+    "social_tiktok_url":    "https://www.tiktok.com/@bebotph",
+    "social_twitter_url":   "https://twitter.com/bebotph",
+    "social_facebook_url":  "",
+    "social_youtube_url":   "",
+    "social_pinterest_url": "",
+    "cart_type":            "drawer",
+    "show_cart_note":       false,
+    "favicon":              null
+  }
+}

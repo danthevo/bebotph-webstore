@@ -1,0 +1,132 @@
+{%- comment -%}
+  Product Card Snippet
+  Accepts:
+    - product {Object} Required. The product object.
+    - lazy_load {Boolean} Optional. Whether to lazy load the image. Default: true.
+    - show_vendor {Boolean} Optional. Whether to show vendor. Default: true.
+    - image_ratio {String} Optional. 'portrait' or 'square'. Default: 'portrait'.
+{%- endcomment -%}
+
+{%- liquid
+  assign lazy_load = lazy_load | default: true
+  assign show_vendor = show_vendor | default: true
+  assign image_ratio = image_ratio | default: 'portrait'
+
+  assign first_variant = product.first_available_variant | default: product.variants.first
+  assign on_sale = false
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif
+  assign sold_out = true
+  if product.available
+    assign sold_out = false
+  endif
+
+  assign hover_image = null
+  if product.images.size > 1
+    assign hover_image = product.images[1]
+  endif
+-%}
+
+<div
+  class="product-card product-card--ratio-{{ image_ratio }}"
+  data-product-id="{{ product.id }}"
+>
+  <div class="product-card__image-wrapper">
+    <a
+      href="{{ product.url }}"
+      class="product-card__image-link"
+      aria-label="{{ product.title | escape }}"
+      tabindex="-1"
+    >
+      {%- if product.featured_image != blank -%}
+        {{
+          product.featured_image
+          | image_url: width: 800
+          | image_tag:
+            class: 'product-card__image product-card__image--primary',
+            loading: lazy_load,
+            sizes: '(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw',
+            widths: '200, 300, 400, 500, 600, 800',
+            alt: product.featured_image.alt | default: product.title
+        }}
+
+        {%- if hover_image != blank -%}
+          {{
+            hover_image
+            | image_url: width: 800
+            | image_tag:
+              class: 'product-card__image product-card__image--secondary',
+              loading: 'lazy',
+              sizes: '(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw',
+              widths: '200, 300, 400, 500, 600, 800',
+              alt: hover_image.alt | default: product.title
+          }}
+        {%- endif -%}
+      {%- else -%}
+        <div class="product-card__image-placeholder">
+          {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Badges {%- endcomment -%}
+    <div class="product-card__badges" aria-hidden="true">
+      {%- if sold_out -%}
+        <span class="product-card__badge product-card__badge--sold-out">
+          {{ 'products.product.sold_out' | t | default: 'Sold Out' }}
+        </span>
+      {%- elsif on_sale -%}
+        {%- liquid
+          assign discount_pct = product.compare_at_price | minus: product.price
+          assign discount_pct = discount_pct | times: 100 | divided_by: product.compare_at_price
+        -%}
+        <span class="product-card__badge product-card__badge--sale">
+          -{{ discount_pct }}%
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Quick add button — shows on hover via CSS {%- endcomment -%}
+    {%- unless sold_out -%}
+      <div class="product-card__quick-add">
+        {%- if product.has_only_default_variant -%}
+          <form action="/cart/add" method="post" class="product-card__quick-add-form" data-quick-add>
+            <input type="hidden" name="id" value="{{ first_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button
+              type="submit"
+              class="btn btn--primary product-card__quick-add-btn"
+              aria-label="{{ 'products.product.add_to_cart' | t | default: 'Add to cart' }}: {{ product.title }}"
+            >
+              {{ 'products.product.quick_add' | t | default: 'Quick Add' }}
+            </button>
+          </form>
+        {%- else -%}
+          <a
+            href="{{ product.url }}"
+            class="btn btn--primary product-card__quick-add-btn"
+            aria-label="{{ 'products.product.choose_options' | t | default: 'Choose options' }}: {{ product.title }}"
+          >
+            {{ 'products.product.choose_options' | t | default: 'Choose Options' }}
+          </a>
+        {%- endif -%}
+      </div>
+    {%- endunless -%}
+  </div>
+
+  {%- comment -%} Card info {%- endcomment -%}
+  <div class="product-card__info">
+    {%- if show_vendor and product.vendor != blank -%}
+      <p class="product-card__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+
+    <a href="{{ product.url }}" class="product-card__title-link">
+      <h3 class="product-card__title">{{ product.title }}</h3>
+    </a>
+
+    <div class="product-card__price">
+      {%- render 'price', product: product, show_badges: false -%}
+    </div>
+  </div>
+</div>

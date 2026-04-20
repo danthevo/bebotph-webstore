@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bebot — Enter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playbill&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+
+/* ─── TOKENS ─── */
+:root {
+  --bk:  #1a0a06;
+  --bk2: #2a1510;
+  --bk3: #3d2018;
+  --cr:  #fff8f5;
+  --cr2: #f5e8e2;
+  --pk:  #F887AE;
+  --dk:  #532C23;
+  --mu:  #c4948a;
+  --mu2: #a07060;
+  --fg:  'Playbill', serif;
+  --fb:  Verdana, Geneva, sans-serif;
+  --fm:  'DM Mono', monospace;
+  --ez:  cubic-bezier(.4,0,.2,1);
+  --ezs: cubic-bezier(.76,0,.24,1);
+}
+
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bk);
+  color: var(--cr);
+  font-family: var(--fb);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── GRAIN ─── */
+.grain {
+  position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: .038;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)'/%3E%3C/svg%3E") 0 0/200px;
+  animation: gr .22s steps(1) infinite;
+}
+@keyframes gr {
+  0%  { transform: translate(0,0); }    25% { transform: translate(-2%,3%); }
+  50% { transform: translate(3%,-2%); } 75% { transform: translate(-3%,1%); }
+}
+
+/* ─── PAGE FADE ─── */
+body.fade-out { animation: pgFade .55s var(--ez) forwards; }
+@keyframes pgFade { to { opacity: 0; } }
+
+/* ─── INTRO OVERLAY ─── */
+.intro {
+  position: fixed; inset: 0; z-index: 8000;
+  background: var(--bk);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem;
+  animation: introOut .7s var(--ez) 2s forwards;
+  pointer-events: none;
+}
+@keyframes introOut { to { opacity: 0; visibility: hidden; } }
+.intro-logo {
+  line-height: 1;
+  animation: up .9s var(--ezs) .2s both;
+}
+.intro-logo img {
+  height: clamp(80px, 18vw, 140px); width: auto;
+  filter: invert(1);
+}
+.intro-tag {
+  font-family: var(--fm); font-size: 9px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--pk);
+  animation: up .9s var(--ezs) .5s both;
+}
+@keyframes up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════ */
+.topbar {
+  flex-shrink: 0;
+  height: 52px;
+  background: var(--bk2);
+  border-bottom: 1px solid rgba(255,248,245,.07);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 1.5rem; z-index: 100;
+  animation: up .6s var(--ez) 2.3s both;
+}
+.tb-logo { line-height: 1; display: flex; align-items: center; }
+.tb-logo img { height: 28px; width: auto; filter: invert(1); }
+.tb-center {
+  font-family: var(--fm); font-size: 9px; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--mu);
+  display: flex; align-items: center; gap: 1.5rem;
+}
+.tb-divider { width: 1px; height: 14px; background: rgba(255,248,245,.1); }
+.tb-live {
+  display: flex; align-items: center; gap: .4rem;
+  color: var(--pk); font-size: 9px; letter-spacing: .18em;
+}
+.live-dot {
+  width: 6px; height: 6px; background: var(--pk); border-radius: 50%;
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+.btn-enter {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: var(--pk); color: #fff;
+  padding: .38rem 1.1rem; border-radius: 100px;
+  font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  cursor: pointer; border: none; font-family: var(--fb);
+  transition: background .15s, transform .15s;
+  box-shadow: 0 2px 16px rgba(248,135,174,.3);
+}
+.btn-enter:hover { background: #d45a88; transform: translateY(-1px); }
+.btn-enter svg { transition: transform .15s; }
+.btn-enter:hover svg { transform: translateX(2px); }
+
+/* ═══════════════════════════════════════
+   SPLIT SCREEN
+═══════════════════════════════════════ */
+.split {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 0;
+  animation: up .8s var(--ez) 2.5s both;
+}
+
+/* ─── LEFT: YouTube ─── */
+.panel-left {
+  position: relative;
+  background: #000;
+  border-right: 1px solid rgba(255,248,245,.06);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-label {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  padding: .7rem 1rem;
+  background: linear-gradient(to bottom, rgba(10,8,6,.9) 0%, transparent 100%);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pl-tag {
+  font-family: var(--fm); font-size: 8.5px; letter-spacing: .18em;
+  text-transform: uppercase; color: rgba(255,248,245,.5);
+  display: flex; align-items: center; gap: .5rem;
+}
+.pl-tag::before { content: '▶'; font-size: 7px; color: var(--pk); }
+.pl-badge {
+  font-family: var(--fm); font-size: 7.5px; letter-spacing: .12em;
+  text-transform: uppercase; padding: .18rem .5rem;
+  border-radius: 100px; background: rgba(248,135,174,.15);
+  border: 1px solid rgba(248,135,174,.25); color: var(--pk);
+}
+
+/* Spotify embed fills panel */
+.sp-wrap {
+  flex: 1; position: relative; min-height: 0;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+}
+.sp-wrap iframe {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  border: 0; display: block;
+}
+
+/* Bottom info bar */
+.panel-foot {
+  flex-shrink: 0;
+  padding: .65rem 1rem;
+  background: rgba(10,8,6,.85);
+  border-top: 1px solid rgba(255,248,245,.06);
+  display: flex; align-items: center; gap: .75rem;
+}
+.pf-icon { font-size: 16px; opacity: .4; }
+.pf-text { flex: 1; }
+.pf-title { font-size: 11px; font-weight: 600; color: var(--cr); }
+.pf-sub   { font-family: var(--fm); font-size: 8.5px; color: var(--mu); letter-spacing: .05em; margin-top: 1px; }
+
+/* ─── RIGHT: TikTok ─── */
+.panel-right {
+  position: relative;
+  background: var(--bk2);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* TikTok top bar */
+.tt-bar {
+  flex-shrink: 0;
+  padding: .65rem 1rem;
+  background: rgba(10,8,6,.7);
+  border-bottom: 1px solid rgba(255,248,245,.06);
+  display: flex; align-items: center; justify-content: space-between;
+  backdrop-filter: blur(8px);
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+}
+.tt-bar-left {
+  display: flex; align-items: center; gap: .75rem;
+}
+.tt-logo {
+  display: flex; align-items: center; gap: .35rem;
+  font-family: var(--fm); font-size: 9px; font-weight: 500; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--cr);
+}
+.tt-logo svg { opacity: .7; }
+.tt-hashtag {
+  font-family: var(--fm); font-size: 9px; letter-spacing: .1em;
+  color: var(--pk); background: rgba(248,135,174,.1);
+  padding: .18rem .55rem; border-radius: 100px; border: 1px solid rgba(248,135,174,.2);
+}
+.tt-sort {
+  font-family: var(--fm); font-size: 8px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--mu);
+  display: flex; align-items: center; gap: .4rem;
+}
+.tt-sort-btn {
+  padding: .18rem .55rem; border-radius: 4px;
+  background: rgba(255,248,245,.06); border: 1px solid rgba(255,248,245,.1);
+  color: var(--cr2); font-family: var(--fm); font-size: 8px;
+  letter-spacing: .1em; cursor: pointer; transition: all .15s;
+}
+.tt-sort-btn.on, .tt-sort-btn:hover {
+  background: var(--pk); border-color: var(--pk); color: #fff;
+}
+
+/* TikTok embed fills right panel */
+.tt-embed-wrap {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 42px;
+  scroll-behavior: smooth;
+}
+.tt-embed-wrap::-webkit-scrollbar { width: 3px; }
+.tt-embed-wrap::-webkit-scrollbar-thumb { background: var(--pk); border-radius: 2px; }
+
+/* ── Elfsight slot ── */
+.tt-elfsight {
+  padding: .75rem .75rem 0;
+}
+
+/* ── Setup card (shown when Elfsight not configured) ── */
+.tt-setup {
+  margin: .75rem;
+  padding: 1.5rem 1.25rem;
+  border-radius: 12px;
+  background: var(--bk3);
+  border: 1px dashed rgba(248,135,174,.25);
+  text-align: center;
+}
+.tt-setup-icon { font-size: 2rem; opacity: .35; margin-bottom: .75rem; }
+.tt-setup-title {
+  font-family: var(--fg); font-size: 1.5rem; color: var(--cr);
+  margin-bottom: .5rem;
+}
+.tt-setup-steps {
+  font-family: var(--fm); font-size: 8.5px; letter-spacing: .06em;
+  color: var(--mu2); line-height: 2; text-align: left;
+  margin: .75rem auto; max-width: 260px;
+}
+.tt-setup-steps b { color: var(--pk); font-weight: 400; }
+.tt-open-btn {
+  display: inline-flex; align-items: center; gap: .5rem;
+  background: #000; color: #fff;
+  padding: .6rem 1.2rem; border-radius: 8px;
+  font-size: 10px; font-weight: 600; letter-spacing: .08em;
+  cursor: pointer; border: 1px solid rgba(255,248,245,.15);
+  font-family: var(--fb); transition: opacity .15s; margin-top: .25rem;
+}
+.tt-open-btn:hover { opacity: .8; }
+.tt-open-btn svg { flex-shrink: 0; }
+
+/* ── Native embed grid ── */
+.tt-section-label {
+  font-family: var(--fm); font-size: 8px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--mu);
+  padding: .65rem .85rem .35rem;
+  display: flex; align-items: center; gap: .5rem;
+}
+.tt-section-label::before { content: ''; flex: 1; height: 1px; background: rgba(255,248,245,.07); }
+
+.tt-native-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .65rem;
+  padding: 0 .65rem .65rem;
+}
+
+.tt-native-card {
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bk3);
+  border: 1px solid rgba(255,248,245,.07);
+  transition: border-color .2s, transform .2s;
+  position: relative;
+}
+.tt-native-card:hover {
+  border-color: rgba(248,135,174,.3);
+  transform: translateY(-2px);
+}
+/* blockquote embed is wrapped in a flex container */
+.tt-native-card blockquote.tiktok-embed {
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  min-width: unset !important;
+  max-width: 100% !important;
+}
+
+/* ── Empty card placeholder (before real IDs added) ── */
+.tt-placeholder-card {
+  border-radius: 10px;
+  background: var(--bk3);
+  border: 1px solid rgba(255,248,245,.06);
+  aspect-ratio: 9/16;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: .5rem;
+}
+.tt-placeholder-card .ph-icon { opacity: .15; font-size: 1.5rem; }
+.tt-placeholder-card .ph-text {
+  font-family: var(--fm); font-size: 7.5px; letter-spacing: .1em;
+  color: var(--mu); text-transform: uppercase; text-align: center;
+  padding: 0 .75rem; line-height: 1.7;
+}
+
+/* ─── BOTTOM BAR ─── */
+.bottombar {
+  flex-shrink: 0; height: 36px;
+  background: var(--bk);
+  border-top: 1px solid rgba(255,248,245,.05);
+  display: flex; align-items: center; padding: 0 1.5rem;
+  justify-content: space-between;
+  font-family: var(--fm); font-size: 8.5px; letter-spacing: .1em;
+  color: rgba(255,248,245,.2); text-transform: uppercase;
+}
+.bb-center {
+  display: flex; align-items: center; gap: 1.25rem;
+}
+.bb-link {
+  color: rgba(255,248,245,.35); cursor: pointer; transition: color .15s;
+}
+.bb-link:hover { color: var(--pk); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .split { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+  .panel-left { border-right: none; border-bottom: 1px solid rgba(255,248,245,.06); }
+}
+  </style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Intro overlay -->
+<div class="intro" aria-hidden="true">
+  <div class="intro-logo"><img src="assets/bebot-logo.png" alt="bebot"></div>
+  <div class="intro-tag">Y2K Reborn · Manila, PH</div>
+</div>
+
+<!-- ══ TOP BAR ══ -->
+<div class="topbar">
+  <div class="tb-logo"><img src="assets/bebot-logo.png" alt="bebot"></div>
+  <div class="tb-center">
+    <span>bebot · Spotify</span>
+    <div class="tb-divider"></div>
+    <div class="tb-live">
+      <div class="live-dot"></div>
+      #bebot TikTok
+    </div>
+  </div>
+  <button class="btn-enter" onclick="enterSite()">
+    Enter Store
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+  </button>
+</div>
+
+<!-- ══ SPLIT SCREEN ══ -->
+<div class="split">
+
+  <!-- ─── LEFT: YouTube Video ─── -->
+  <div class="panel-left">
+
+    <div class="panel-label">
+      <div class="pl-tag">APL de ap × Black Eyed Peas · Original</div>
+      <div class="pl-badge">Now Playing</div>
+    </div>
+
+    <div class="sp-wrap">
+      <iframe
+        src="https://open.spotify.com/embed/track/4nZwaKTdxczLpUHfLVAozA?utm_source=generator&theme=0"
+        title="bebot — Spotify"
+        frameborder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+
+    <div class="panel-foot">
+      <div class="pf-icon">🎵</div>
+      <div class="pf-text">
+        <div class="pf-title">bebot — Apl.de.ap × Black Eyed Peas</div>
+        <div class="pf-sub">The track that started it all · Y2K Pinoy pride</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── RIGHT: TikTok #bebot ─── -->
+  <div class="panel-right">
+
+    <!-- TikTok bar -->
+    <div class="tt-bar">
+      <div class="tt-bar-left">
+        <!-- TikTok logo -->
+        <div class="tt-logo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+          TikTok
+        </div>
+        <div class="tt-hashtag">#bebot</div>
+        <div class="live-dot" style="margin-left:.25rem"></div>
+        <span style="font-family:var(--fm);font-size:8px;color:var(--pk);letter-spacing:.1em">LIVE</span>
+      </div>
+      <div class="tt-sort">
+        <span>Sort:</span>
+        <button class="tt-sort-btn on" onclick="setSort(this,'views')">Most Views</button>
+        <button class="tt-sort-btn" onclick="setSort(this,'recent')">Recent</button>
+      </div>
+    </div>
+
+    <!-- TikTok embed panel -->
+    <div class="tt-embed-wrap" id="ttWrap">
+
+      <!-- ══ OPTION A: Elfsight TikTok Feed Widget ══
+           1. Go to https://elfsight.com/tiktok-feed-widget/
+           2. Sign up free → Create widget → Source: Hashtag → #bebot
+           3. Copy your App ID (looks like: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)
+           4. Replace YOUR_ELFSIGHT_APP_ID below, then delete the setup card
+      -->
+      <div class="tt-elfsight" id="elfsightSlot">
+        <!-- UNCOMMENT & PASTE YOUR APP ID:
+        <script src="https://static.elfsight.com/platform/platform.js" async></script>
+        <div class="elfsight-app-YOUR_ELFSIGHT_APP_ID" data-elfsight-app-lazy></div>
+        -->
+      </div>
+
+      <!-- ══ SETUP CARD — remove once Elfsight or real video IDs are added ══ -->
+      <div class="tt-setup" id="ttSetup">
+        <div class="tt-setup-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="rgba(255,248,245,0.3)"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+        </div>
+        <div class="tt-setup-title">#bebot</div>
+        <div class="tt-setup-steps">
+          <b>Option A — Elfsight (live feed)</b><br>
+          1. Sign up free at elfsight.com<br>
+          2. Create TikTok Feed → Source: #bebot<br>
+          3. Copy App ID → paste in HTML<br><br>
+          <b>Option B — Paste real video IDs below</b><br>
+          1. Open a #bebot TikTok video<br>
+          2. Share → Copy link<br>
+          3. Grab the number after /video/<br>
+          4. Replace IDs in tt-native-grid
+        </div>
+        <a href="https://www.tiktok.com/tag/bebot" target="_blank">
+          <button class="tt-open-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+            Browse #bebot on TikTok ↗
+          </button>
+        </a>
+      </div>
+
+      <!-- ══ OPTION B: Official TikTok blockquote embeds ══
+           Replace each VIDEO_ID with a real 19-digit TikTok video ID.
+           Get it from the URL: tiktok.com/@user/video/VIDEO_ID
+           Sort by most views manually — pick your top 4.
+           Once you add real IDs, delete the tt-setup card above.
+      -->
+      <div class="tt-section-label">Top #bebot Videos</div>
+
+      <div class="tt-native-grid" id="ttGrid">
+
+        <!-- CARD 1 — replace VIDEO_ID_1 -->
+        <div class="tt-native-card" id="ttCard1">
+          <div class="tt-placeholder-card">
+            <div class="ph-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(255,248,245,0.2)"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+            </div>
+            <div class="ph-text">Paste video ID<br>in HTML</div>
+          </div>
+          <!-- REPLACE WITH:
+          <blockquote class="tiktok-embed"
+            cite="https://www.tiktok.com/@username/video/VIDEO_ID_1"
+            data-video-id="VIDEO_ID_1"
+            style="max-width:100%;min-width:unset;">
+            <section></section>
+          </blockquote>
+          -->
+        </div>
+
+        <!-- CARD 2 — replace VIDEO_ID_2 -->
+        <div class="tt-native-card" id="ttCard2">
+          <div class="tt-placeholder-card">
+            <div class="ph-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(255,248,245,0.2)"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+            </div>
+            <div class="ph-text">Paste video ID<br>in HTML</div>
+          </div>
+          <!-- REPLACE WITH:
+          <blockquote class="tiktok-embed"
+            cite="https://www.tiktok.com/@username/video/VIDEO_ID_2"
+            data-video-id="VIDEO_ID_2"
+            style="max-width:100%;min-width:unset;">
+            <section></section>
+          </blockquote>
+          -->
+        </div>
+
+        <!-- CARD 3 — replace VIDEO_ID_3 -->
+        <div class="tt-native-card" id="ttCard3">
+          <div class="tt-placeholder-card">
+            <div class="ph-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(255,248,245,0.2)"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+            </div>
+            <div class="ph-text">Paste video ID<br>in HTML</div>
+          </div>
+          <!-- REPLACE WITH:
+          <blockquote class="tiktok-embed"
+            cite="https://www.tiktok.com/@username/video/VIDEO_ID_3"
+            data-video-id="VIDEO_ID_3"
+            style="max-width:100%;min-width:unset;">
+            <section></section>
+          </blockquote>
+          -->
+        </div>
+
+        <!-- CARD 4 — replace VIDEO_ID_4 -->
+        <div class="tt-native-card" id="ttCard4">
+          <div class="tt-placeholder-card">
+            <div class="ph-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="rgba(255,248,245,0.2)"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.79 1.54V6.78a4.84 4.84 0 01-1.02-.09z"/></svg>
+            </div>
+            <div class="ph-text">Paste video ID<br>in HTML</div>
+          </div>
+          <!-- REPLACE WITH:
+          <blockquote class="tiktok-embed"
+            cite="https://www.tiktok.com/@username/video/VIDEO_ID_4"
+            data-video-id="VIDEO_ID_4"
+            style="max-width:100%;min-width:unset;">
+            <section></section>
+          </blockquote>
+          -->
+        </div>
+
+      </div><!-- /tt-native-grid -->
+
+      <!-- TikTok embed.js — loads once real blockquotes are present -->
+      <script async src="https://www.tiktok.com/embed.js"></script>
+
+    </div><!-- /tt-embed-wrap -->
+
+  </div>
+
+</div><!-- /split -->
+
+<!-- ══ BOTTOM BAR ══ -->
+<div class="bottombar">
+  <span>bebot · est. early 2000s</span>
+  <div class="bb-center">
+    <span class="bb-link" onclick="enterSite()">Enter Store →</span>
+    <span>·</span>
+    <a href="https://www.tiktok.com/tag/bebot" target="_blank" class="bb-link">#bebot on TikTok ↗</a>
+    <span>·</span>
+    <span>Manila, PH 🇵🇭</span>
+  </div>
+  <span>© 2025 bebot</span>
+</div>
+
+<script>
+  /* ── Enter site ── */
+  function enterSite() {
+    document.body.classList.add('fade-out');
+    setTimeout(() => { window.location.href = 'prototype.html'; }, 560);
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') enterSite(); });
+
+  /* ── Sort buttons ── */
+  function setSort(btn, mode) {
+    document.querySelectorAll('.tt-sort-btn').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    /* Sort is visual-only until real video IDs are added —
+       manually order the blockquote cards by views or recency in HTML */
+  }
+
+  /* ── Hide setup card once Elfsight slot has content ── */
+  const elfsightSlot = document.getElementById('elfsightSlot');
+  const ttSetup = document.getElementById('ttSetup');
+  if (elfsightSlot && elfsightSlot.querySelector('[class*="elfsight-app"]')) {
+    if (ttSetup) ttSetup.style.display = 'none';
+  }
+</script>
+</body>
+</html>

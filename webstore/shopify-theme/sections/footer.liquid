@@ -1,0 +1,212 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__main container">
+    <div class="site-footer__grid">
+
+      {%- comment -%} Brand column {%- endcomment -%}
+      <div class="site-footer__brand">
+        <a href="{{ routes.root_url }}" class="site-footer__logo" aria-label="{{ shop.name }}">
+          {%- if section.settings.footer_logo != blank -%}
+            {{
+              section.settings.footer_logo
+              | image_url: width: 200
+              | image_tag:
+                class: 'site-footer__logo-image',
+                loading: 'lazy',
+                alt: shop.name,
+                widths: '100, 150, 200'
+            }}
+          {%- else -%}
+            <span class="site-footer__logo-text">{{ shop.name }}</span>
+          {%- endif -%}
+        </a>
+
+        {%- if section.settings.tagline != blank -%}
+          <p class="site-footer__tagline">{{ section.settings.tagline }}</p>
+        {%- endif -%}
+
+        {%- comment -%} Social links {%- endcomment -%}
+        <div class="site-footer__social" aria-label="{{ 'general.social.follow_us' | t | default: 'Follow us' }}">
+          {%- if settings.social_instagram_url != blank -%}
+            <a href="{{ settings.social_instagram_url }}" class="site-footer__social-link" target="_blank" rel="noopener" aria-label="Instagram">
+              {%- render 'icon', icon: 'instagram' -%}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_tiktok_url != blank -%}
+            <a href="{{ settings.social_tiktok_url }}" class="site-footer__social-link" target="_blank" rel="noopener" aria-label="TikTok">
+              {%- render 'icon', icon: 'tiktok' -%}
+            </a>
+          {%- endif -%}
+          {%- if settings.social_twitter_url != blank -%}
+            <a href="{{ settings.social_twitter_url }}" class="site-footer__social-link" target="_blank" rel="noopener" aria-label="Twitter / X">
+              {%- render 'icon', icon: 'twitter' -%}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} Link columns from blocks {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'link-column' -%}
+          <div class="site-footer__column" {{ block.shopify_attributes }}>
+            {%- if block.settings.title != blank -%}
+              <h3 class="site-footer__column-title">{{ block.settings.title }}</h3>
+            {%- endif -%}
+            {%- if block.settings.linklist != blank -%}
+              <ul class="site-footer__links" role="list">
+                {%- for link in linklists[block.settings.linklist].links -%}
+                  <li>
+                    <a href="{{ link.url }}" class="site-footer__link">{{ link.title }}</a>
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%} Newsletter column {%- endcomment -%}
+      {%- if section.settings.show_newsletter -%}
+        <div class="site-footer__newsletter">
+          <h3 class="site-footer__column-title">{{ section.settings.newsletter_heading | default: 'Stay in the loop' }}</h3>
+          {%- if section.settings.newsletter_subtext != blank -%}
+            <p class="site-footer__newsletter-sub">{{ section.settings.newsletter_subtext }}</p>
+          {%- endif -%}
+
+          {%- form 'customer', id: 'FooterNewsletter', class: 'footer-newsletter-form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="footer-newsletter-form__field">
+              <label for="FooterNewsletterEmail" class="visually-hidden">
+                {{ 'general.newsletter.email_placeholder' | t | default: 'Your email address' }}
+              </label>
+              <input
+                type="email"
+                id="FooterNewsletterEmail"
+                name="contact[email]"
+                class="form-input"
+                placeholder="{{ 'general.newsletter.email_placeholder' | t | default: 'Your email address' }}"
+                autocomplete="email"
+                required
+                aria-required="true"
+              >
+              <button type="submit" class="btn btn--primary footer-newsletter-form__btn">
+                {{ 'general.newsletter.submit' | t | default: 'Subscribe' }}
+              </button>
+            </div>
+
+            {%- if form.posted_successfully? -%}
+              <p class="footer-newsletter-form__success" role="status">
+                {{ 'general.newsletter.success' | t | default: "Thanks for subscribing — you're on the list." }}
+              </p>
+            {%- endif -%}
+            {%- if form.errors -%}
+              <p class="footer-newsletter-form__error" role="alert">
+                {{ form.errors.translated_fields.email | capitalize }}
+                {{ form.errors.messages.email }}
+              </p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+  </div>
+
+  {%- comment -%} Legal bar {%- endcomment -%}
+  <div class="site-footer__legal">
+    <div class="container site-footer__legal-inner">
+      <p class="site-footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}.
+        {{ 'general.footer.copyright' | t | default: 'All rights reserved.' }}
+      </p>
+      <nav class="site-footer__legal-links" aria-label="{{ 'general.navigation.legal' | t | default: 'Legal navigation' }}">
+        {%- for link in linklists['footer-legal'].links -%}
+          <a href="{{ link.url }}" class="site-footer__legal-link">{{ link.title }}</a>
+        {%- endfor -%}
+      </nav>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "blocks": [
+    {
+      "type": "link-column",
+      "name": "Link column",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Column heading",
+          "default": "Quick Links"
+        },
+        {
+          "type": "link_list",
+          "id": "linklist",
+          "label": "Navigation menu",
+          "default": "footer"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "Footer logo",
+      "info": "Leave blank to use shop name"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Brand tagline",
+      "default": "Y2K reborn."
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "default": true,
+      "label": "Show newsletter signup"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter heading",
+      "default": "Stay in the loop"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_subtext",
+      "label": "Newsletter subtext",
+      "default": "New drops, restocks, and exclusive offers — straight to your inbox."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "link-column",
+          "settings": {
+            "title": "Shop",
+            "linklist": "main-menu"
+          }
+        },
+        {
+          "type": "link-column",
+          "settings": {
+            "title": "Help",
+            "linklist": "footer"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

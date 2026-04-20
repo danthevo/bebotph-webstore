@@ -1,0 +1,78 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_background }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {%- render 'meta-tags' -%}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    {{ content_for_header }}
+
+    {{- 'base.css' | asset_url | stylesheet_tag -}}
+
+    <script>
+      // Theme globals
+      window.Shopify = window.Shopify || {};
+      window.Shopify.theme = {
+        name: 'Bebot',
+        cartType: '{{ settings.cart_type }}',
+        moneyFormat: {{ shop.money_format | json }},
+        moneyWithCurrencyFormat: {{ shop.money_with_currency_format | json }}
+      };
+
+      // Remove no-js class
+      document.documentElement.classList.remove('no-js');
+      document.documentElement.classList.add('js');
+    </script>
+  </head>
+
+  <body
+    class="template-{{ template.name | handle }}{% if template.suffix != blank %} template-{{ template.name | handle }}-{{ template.suffix | handle }}{% endif %}"
+    data-cart-type="{{ settings.cart_type }}"
+    data-currency="{{ cart.currency.iso_code }}"
+  >
+    {%- comment -%} Skip to content link for accessibility {%- endcomment -%}
+    <a class="skip-link visually-hidden" href="#MainContent">
+      {{ 'accessibility.skip_to_content' | t | default: 'Skip to content' }}
+    </a>
+
+    {%- section 'promo-banner' -%}
+    {%- section 'header' -%}
+
+    {%- comment -%} Drawers — rendered outside main for stacking context {%- endcomment -%}
+    {%- section 'cart-drawer' -%}
+    {%- section 'search-drawer' -%}
+
+    {%- comment -%} Overlay backdrop for drawers {%- endcomment -%}
+    <div id="Overlay" class="overlay" aria-hidden="true"></div>
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {%- section 'footer' -%}
+
+    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  </body>
+</html>
