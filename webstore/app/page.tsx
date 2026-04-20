@@ -173,10 +173,6 @@ export default function Home() {
     <>
       <div className="grain" aria-hidden="true"></div>
       <div className="overlay" id="overlay" onClick={() => window.closeReserve()}></div>
-      <div className="toast" id="toast">
-        <span className="pk">✓</span>
-        <span id="tMsg">Added</span>
-      </div>
 
       {/* ── HEADER ── */}
       <header className="hdr" id="hdr">
