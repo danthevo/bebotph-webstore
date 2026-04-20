@@ -609,6 +609,57 @@ input[type=range].vol { width: 60px; height: 3px; accent-color: var(--pk); curso
 .ci-rm { font-size: 12px; color: var(--mu); transition: color .15s; }
 .ci-rm:hover { color: var(--pk); }
 
+/* ═══════ RESERVATION DRAWER ═══════ */
+.rv-body { display: flex; flex-direction: column; gap: 1.1rem; }
+.rv-item { padding: .85rem 1rem; background: var(--cr2); border-radius: 10px; border: 1.5px solid var(--bd); }
+.rv-item-name { font-family: var(--fg); font-size: 1.3rem; color: var(--bk); }
+.rv-item-price { font-family: var(--fm); font-size: 11px; color: var(--pk); letter-spacing: .08em; margin-top: 2px; }
+.rv-field { display: flex; flex-direction: column; gap: .45rem; }
+.rv-label { font-family: var(--fm); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--mu); }
+.rv-sizes { display: flex; gap: .5rem; }
+.rv-sz {
+  flex: 1; padding: .5rem 0; border-radius: 8px;
+  border: 1.5px solid var(--bd); font-size: 11px; font-weight: 700;
+  color: var(--bk); transition: .15s;
+}
+.rv-sz:hover, .rv-sz.on { background: var(--bk); color: var(--cr); border-color: var(--bk); }
+.rv-input {
+  width: 100%; padding: .6rem .85rem; border-radius: 8px;
+  border: 1.5px solid var(--bd); font-size: 13px; color: var(--bk);
+  background: var(--cr); font-family: var(--fb);
+  transition: border-color .15s;
+}
+.rv-input:focus { outline: none; border-color: var(--pk); }
+.rv-pickup-info {
+  display: flex; gap: .75rem; align-items: flex-start;
+  padding: .85rem 1rem; background: rgba(248,135,174,.08);
+  border-radius: 10px; border: 1px solid rgba(248,135,174,.2);
+}
+.rv-pi-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+.rv-pi-title { font-family: var(--fm); font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: var(--pk); margin-bottom: .3rem; }
+.rv-pi-addr { font-size: 12px; font-weight: 600; color: var(--bk); line-height: 1.5; }
+.rv-pi-time { font-family: var(--fm); font-size: 9px; color: var(--mu); letter-spacing: .06em; margin-top: .3rem; }
+.rv-err { font-family: var(--fm); font-size: 10px; color: #e05; padding: .5rem .75rem; background: rgba(220,0,80,.08); border-radius: 6px; }
+.rv-ft { display: flex; flex-direction: column; gap: .6rem; }
+.rv-btn {
+  width: 100%; padding: .8rem; border-radius: 8px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  transition: .15s; cursor: pointer;
+}
+.rv-pickup { background: var(--bk); color: var(--cr); }
+.rv-pickup:hover { background: var(--pk); }
+.rv-waitlist { background: transparent; color: var(--bk); border: 1.5px solid var(--bd); }
+.rv-waitlist:hover { border-color: var(--bk); }
+.rv-success {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem 1.5rem; text-align: center;
+}
+.rv-success-icon { font-size: 2.5rem; color: var(--pk); margin-bottom: 1rem; }
+.rv-success-type { font-family: var(--fg); font-size: 1.8rem; color: var(--bk); margin-bottom: .75rem; }
+.rv-success-msg { font-size: 13px; color: var(--mu); line-height: 1.7; }
+.rv-success-msg strong { color: var(--bk); }
+
 /* Toast */
 .toast {
   position: fixed; bottom: calc(var(--ph) + 1rem); left: 50%; z-index: 800;

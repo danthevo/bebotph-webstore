@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bebot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playbill&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bk: #1a0a06;
+  --pk: #F887AE;
+  --cr: #fff8f5;
+  --fm: 'DM Mono', monospace;
+  --ezs: cubic-bezier(.76,0,.24,1);
+  --ez:  cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bk);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Grain ── */
+.grain {
+  position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: .038;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)'/%3E%3C/svg%3E") 0 0/200px;
+  animation: gr .22s steps(1) infinite;
+}
+@keyframes gr {
+  0%  { transform: translate(0,0); }    25% { transform: translate(-2%,3%); }
+  50% { transform: translate(3%,-2%); } 75% { transform: translate(-3%,1%); }
+}
+
+/* ── Intro overlay ── */
+.intro {
+  position: fixed; inset: 0; z-index: 8000;
+  background: var(--bk);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem;
+  animation: introOut .7s var(--ez) 2s forwards;
+}
+@keyframes introOut { to { opacity: 0; visibility: hidden; } }
+
+.intro-logo {
+  line-height: 1;
+  animation: up .9s var(--ezs) .2s both;
+}
+.intro-logo img {
+  height: clamp(80px, 18vw, 140px); width: auto;
+  filter: invert(1);
+}
+.intro-tag {
+  font-family: var(--fm); font-size: 9px; letter-spacing: .3em;
+  text-transform: uppercase; color: var(--pk);
+  animation: up .9s var(--ezs) .5s both;
+}
+@keyframes up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+  </style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<div class="intro">
+  <div class="intro-logo"><img src="assets/bebot-logo.png" alt="bebot"></div>
+  <div class="intro-tag">Y2K Reborn · Manila, PH</div>
+</div>
+
+<script>
+  // Auto-redirect after intro animation completes (2s delay + 0.7s fade = 2.7s)
+  setTimeout(() => { window.location.href = '/'; }, 2700);
+</script>
+</body>
+</html>
