@@ -13,6 +13,16 @@ declare global {
 
 export default function Home() {
   useEffect(() => {
+    /* ══ SPLASH — show once per session ══ */
+    const intro = document.querySelector(".intro") as HTMLElement | null;
+    if (intro) {
+      if (sessionStorage.getItem("bebot_intro_seen")) {
+        intro.style.display = "none";
+      } else {
+        sessionStorage.setItem("bebot_intro_seen", "1");
+      }
+    }
+
     /* ══ RESERVATION ══ */
     let rvItem = { name: "", price: "" };
     let rvSize = "";
