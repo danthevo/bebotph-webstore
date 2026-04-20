@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     siteName: "bebot",
     images: [
       {
-        url: "https://www.bebot.ph/assets/sam-aplfi-outside.jpg",
+        url: "https://www.bebot.ph/assets/bebot-baby-tee-1.jpg",
         width: 1200,
         height: 800,
         alt: "bebot — Y2K reborn, Manila streetwear",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "bebot",
     description: "Y2K reborn. Manila streetwear for those who never let go of the era.",
-    images: ["https://www.bebot.ph/assets/sam-aplfi-outside.jpg"],
+    images: ["https://www.bebot.ph/assets/bebot-baby-tee-1.jpg"],
   },
 };
 
