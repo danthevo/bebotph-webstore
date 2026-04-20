@@ -172,6 +172,15 @@ export default function Home() {
   return (
     <>
       <div className="grain" aria-hidden="true"></div>
+
+      {/* ── SPLASH INTRO ── */}
+      <div className="intro" aria-hidden="true">
+        <div className="intro-logo">
+          <img src="/assets/bebot-logo.png" alt="bebot" />
+        </div>
+        <div className="intro-tag">Y2K Reborn · Manila, PH</div>
+      </div>
+
       <div className="overlay" id="overlay" onClick={() => window.closeReserve()}></div>
 
       {/* ── HEADER ── */}
