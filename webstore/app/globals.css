@@ -117,7 +117,7 @@ body.dark .theme-toggle::after { transform: translateX(24px); background: #fff8f
 
 /* ═══════ RESET ═══════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   background: var(--cr);
   color: var(--bk);
@@ -163,8 +163,8 @@ button { font-family: var(--fb); cursor: pointer; border: none; background: none
   animation: gr .22s steps(1) infinite;
 }
 @keyframes gr {
-  0%  { transform: translate(0,0); }    25% { transform: translate(-2%,3%); }
-  50% { transform: translate(3%,-2%); } 75% { transform: translate(-3%,1%); }
+  0%  { transform: translate(0,0); }      25% { transform: translate(-4px,6px); }
+  50% { transform: translate(6px,-4px); } 75% { transform: translate(-6px,2px); }
 }
 
 /* ═══════ HEADER ═══════ */
