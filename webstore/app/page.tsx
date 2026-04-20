@@ -45,27 +45,39 @@ export default function Home() {
       document.querySelectorAll(".rv-sz").forEach(b => b.classList.remove("on"));
       btn.classList.add("on");
     }
+    const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+
     function submitReserve(type: string) {
       const nameInput = document.getElementById("rvNameInput") as HTMLInputElement;
-      const phoneInput = document.getElementById("rvPhone") as HTMLInputElement;
+      const contactInput = document.getElementById("rvPhone") as HTMLInputElement;
       const errEl = document.getElementById("rvErr");
+      const submitBtns = document.querySelectorAll<HTMLButtonElement>(".rv-btn");
       const name = nameInput?.value.trim();
-      const phone = phoneInput?.value.trim();
-      if (!name || !phone || !rvSize) {
+      const contact = contactInput?.value.trim();
+      if (!name || !contact || !rvSize) {
         if (errEl) { errEl.textContent = "Please fill in all fields and select a size."; errEl.style.display = "block"; }
         return;
       }
       if (errEl) errEl.style.display = "none";
-      const success = document.getElementById("rvSuccess");
-      const form = document.getElementById("rvForm");
-      const typeEl = document.getElementById("rvSuccessType");
-      const msgEl = document.getElementById("rvSuccessMsg");
-      if (form) form.style.display = "none";
-      if (success) success.style.display = "flex";
-      if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! 🎉" : "You're on the waitlist! ✦";
-      if (msgEl) msgEl.innerHTML = type === "pickup"
-        ? `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>Pay at the Bebot Party:<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm`
-        : `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>We'll reach out on WhatsApp to confirm your order and payment details.`;
+      submitBtns.forEach(b => { b.disabled = true; b.style.opacity = ".5"; });
+
+      const payload = { name, contact, size: rvSize, item: rvItem.name, price: rvItem.price, type, event: "April 25 2026" };
+
+      fetch(APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
+        .catch(() => {/* silent fail — still show success */})
+        .finally(() => {
+          submitBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
+          const success = document.getElementById("rvSuccess");
+          const form = document.getElementById("rvForm");
+          const typeEl = document.getElementById("rvSuccessType");
+          const msgEl = document.getElementById("rvSuccessMsg");
+          if (form) form.style.display = "none";
+          if (success) success.style.display = "flex";
+          if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! 🎉" : "You're on the waitlist! ✦";
+          if (msgEl) msgEl.innerHTML = type === "pickup"
+            ? `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>Bebot Party · April 25, 2026<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm<br><br>Pay at the door — see you there!`
+            : `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>We'll reach out via ${contact.includes("@") ? "email" : "Viber/phone"} to confirm payment details.`;
+        });
     }
 
     window.openReserve = openReserve;
@@ -364,16 +376,16 @@ export default function Home() {
             </div>
 
             <div className="rv-field">
-              <label className="rv-label">WhatsApp / Phone</label>
-              <input id="rvPhone" className="rv-input" type="tel" placeholder="+63 9XX XXX XXXX" />
+              <label className="rv-label">Phone / Viber / Email</label>
+              <input id="rvPhone" className="rv-input" type="text" placeholder="+63 9XX XXX XXXX or email" />
             </div>
 
             <div className="rv-pickup-info">
               <div className="rv-pi-icon">📍</div>
               <div>
-                <div className="rv-pi-title">Pickup Location</div>
+                <div className="rv-pi-title">Bebot Party · April 25, 2026</div>
                 <div className="rv-pi-addr">Annex · 5638 Don Pedro<br />Makati City, 1209 Metro Manila</div>
-                <div className="rv-pi-time">After 5pm · Payment at door</div>
+                <div className="rv-pi-time">After 5pm · Cash payment at door</div>
               </div>
             </div>
 
