@@ -134,7 +134,7 @@ button { font-family: var(--fb); cursor: pointer; border: none; background: none
 /* ═══════ SPLASH INTRO ═══════ */
 .intro {
   position: fixed; inset: 0; z-index: 8500;
-  background: var(--bk);
+  background: #1a0a06;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .75rem;
   animation: introOut .7s cubic-bezier(.4,0,.2,1) 2.2s forwards;
   pointer-events: none;
@@ -145,11 +145,11 @@ button { font-family: var(--fb); cursor: pointer; border: none; background: none
 }
 .intro-logo img {
   height: clamp(80px, 18vw, 130px); width: auto;
-  filter: invert(1);
+  filter: brightness(0) invert(1);
 }
 .intro-tag {
   font-family: var(--fm); font-size: 9px; letter-spacing: .3em;
-  text-transform: uppercase; color: var(--pk);
+  text-transform: uppercase; color: #F887AE;
   animation: introUp .9s cubic-bezier(.76,0,.24,1) .5s both;
 }
 @keyframes introUp {
