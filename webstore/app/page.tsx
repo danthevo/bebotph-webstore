@@ -183,7 +183,7 @@ export default function Home() {
               <line x1="3" y1="6" x2="21" y2="6" />
               <path d="M16 10a4 4 0 01-8 0" />
             </svg>
-            Cart (<span id="cartCount">0</span>)
+            <span className="cart-label">Cart </span>(<span id="cartCount">0</span>)
           </button>
         </div>
       </header>

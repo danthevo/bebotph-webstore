@@ -639,4 +639,6 @@ input[type=range].vol { width: 60px; height: 3px; accent-color: var(--pk); curso
   .hdr-logo img { height: 40px; }
   .prod-grid { gap: .75rem; }
   .prod-grid .pcard { width: calc(50% - .375rem); }
+  .btn-cart { letter-spacing: 0; padding: .38rem .65rem; gap: .25rem; font-size: 9px; }
+  .btn-cart .cart-label { display: none; }
 }
