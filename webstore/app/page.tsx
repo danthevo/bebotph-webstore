@@ -75,7 +75,7 @@ export default function Home() {
           if (success) success.style.display = "flex";
           if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! 🎉" : "You're on the waitlist! ✦";
           if (msgEl) msgEl.innerHTML = type === "pickup"
-            ? `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>Bebot Party · April 25, 2026<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm<br><br>Pay at the door — see you there!`
+            ? `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>Bebot Party · April 25, 2026<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm<br><br>GCash / Card at the door — see you there!`
             : `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>We'll reach out via ${contact.includes("@") ? "email" : "Viber/phone"} to confirm payment details.`;
         });
     }
@@ -385,7 +385,7 @@ export default function Home() {
               <div>
                 <div className="rv-pi-title">Bebot Party · April 25, 2026</div>
                 <div className="rv-pi-addr">Annex · 5638 Don Pedro<br />Makati City, 1209 Metro Manila</div>
-                <div className="rv-pi-time">After 5pm · Cash payment at door</div>
+                <div className="rv-pi-time">After 5pm · GCash / Card at door</div>
               </div>
             </div>
 
