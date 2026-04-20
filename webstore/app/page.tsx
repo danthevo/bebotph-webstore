@@ -145,16 +145,16 @@ export default function Home() {
         e.preventDefault();
         const emailEl = document.getElementById("droplistEmail") as HTMLInputElement;
         const msg = document.getElementById("droplistMsg") as HTMLElement;
-        const email = emailEl?.value;
-        const APPS_SCRIPT_URL = "https://script.google.com/a/macros/bebot.ph/s/AKfycbz8Ov_lEm4DRgtDvZ0ZrGk8qEd9o8qxSRmXsHisB76GUOCDV1CLYYC3408ZWTcoXqrmUA/exec";
+        const email = emailEl?.value.trim();
+        if (!email) return;
+        const btn = form.querySelector("button") as HTMLButtonElement;
+        if (btn) { btn.disabled = true; btn.textContent = "..."; }
         fetch(APPS_SCRIPT_URL, {
           method: "POST",
-          body: new URLSearchParams({ email }),
-        }).then(() => {
+          body: JSON.stringify({ contact: email, name: "", size: "", item: "", price: "", type: "droplist", event: "April 25 2026" }),
+        }).catch(() => {/* silent */}).finally(() => {
           form.style.display = "none";
           if (msg) msg.style.display = "block";
-        }).catch(() => {
-          if (msg) { msg.textContent = "Something went wrong. Try again."; msg.style.display = "block"; }
         });
       });
     }
