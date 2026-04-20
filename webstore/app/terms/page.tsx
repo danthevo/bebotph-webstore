@@ -72,8 +72,8 @@ export default function Terms() {
         <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: ".5rem" }}>9. Contact</h2>
         <p style={{ fontSize: "13.5px" }}>
           Questions about these Terms? Reach us via Instagram{" "}
-          <a href="https://www.instagram.com/bebot.ph" style={{ color: "#F887AE" }}>@bebot.ph</a>{" "}
-          or TikTok <a href="https://www.tiktok.com/@bebot.ph" style={{ color: "#F887AE" }}>@bebot.ph</a>.
+          <a href="https://www.instagram.com/_bebotph" style={{ color: "#F887AE" }}>@bebot.ph</a>{" "}
+          or TikTok <a href="https://www.tiktok.com/@.bebot.ph" style={{ color: "#F887AE" }}>@bebot.ph</a>.
         </p>
       </section>
 
