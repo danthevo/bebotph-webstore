@@ -543,12 +543,12 @@ body.dark .hdr-logo img { filter: invert(1); }
 .f-logo { display: block; margin-bottom: .5rem; }
 .f-logo img { height: 48px; width: auto; }
 .f-sub  { font-size: 12px; color: var(--mu); font-style: italic; line-height: 1.8; }
-.socials { display: flex; gap: .6rem; margin-top: 1rem; }
+.socials { display: flex; gap: .75rem; margin-top: 1rem; }
 .soc {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1px solid var(--bd);
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--bd);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--fm); font-size: 8.5px; color: var(--bk); transition: .15s;
+  color: var(--bk); transition: .15s;
 }
 .soc:hover { background: var(--pk); border-color: var(--pk); color: #fff; }
 .f-col h4 {
