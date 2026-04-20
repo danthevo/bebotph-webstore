@@ -17,7 +17,7 @@
   --fm:   'DM Mono', monospace;
   --th:   0px;
   --hh:   80px;
-  --ph:   74px;
+  --ph:   80px;
   --r:    12px;
   --ez:   cubic-bezier(.4,0,.2,1);
   --ezs:  cubic-bezier(.76,0,.24,1);
@@ -542,9 +542,8 @@ body.dark .hdr-logo img { filter: invert(1); mix-blend-mode: normal; }
 /* ═══════ MUSIC PLAYER ═══════ */
 .player {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
-  height: var(--ph); background: var(--cr2);
+  height: 80px; background: #000;
   border-top: 1.5px solid var(--bd);
-  display: flex; align-items: center; padding: 0 1.5rem; gap: 1.25rem;
 }
 .np-dot { width: 7px; height: 7px; background: var(--pk); border-radius: 50%; flex-shrink: 0; animation: bk 1.5s ease-in-out infinite; }
 @keyframes bk { 0%,100% { opacity:1; } 50% { opacity:.2; } }

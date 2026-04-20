@@ -8,91 +8,11 @@ declare global {
     openCart: () => void;
     closeCart: () => void;
     toggleTheme: () => void;
-    togglePlay: () => void;
-    prevTrack: () => void;
-    nextTrack: () => void;
-    setVol: (v: string) => void;
-    seekAudio: (e: MouseEvent) => void;
   }
 }
 
 export default function Home() {
   useEffect(() => {
-    /* ══ MUSIC ══ */
-    const tracks = [
-      { title: "I Wish", src: "" },
-      { title: "Anything", src: "" },
-      { title: "Attention", src: "" },
-      { title: "Body", src: "" },
-      { title: "Constellation", src: "" },
-      { title: "Dance Like No One's Watching", src: "" },
-      { title: "Don't Wanna Want Your Love", src: "" },
-      { title: "Feel the Love", src: "" },
-      { title: "Girl in the Mirror", src: "" },
-      { title: "Had Me at Hello", src: "" },
-      { title: "Heart Speak", src: "" },
-      { title: "Just Tonight", src: "" },
-      { title: "Not Sorry", src: "" },
-      { title: "Lights", src: "" },
-      { title: "Like That", src: "" },
-    ];
-    const audio = document.getElementById("audio") as HTMLAudioElement;
-    const playBtn = document.getElementById("playBtn") as HTMLButtonElement;
-    let tIdx = 0;
-    let isPlaying = false;
-
-    function loadTrack(i: number) {
-      tIdx = ((i % tracks.length) + tracks.length) % tracks.length;
-      audio.src = tracks[tIdx].src;
-      const plTrack = document.getElementById("plTrack");
-      const plBar = document.getElementById("plBar") as HTMLElement;
-      const plCur = document.getElementById("plCur");
-      const plDur = document.getElementById("plDur");
-      if (plTrack) plTrack.textContent = tracks[tIdx].title;
-      if (plBar) plBar.style.width = "0%";
-      if (plCur) plCur.textContent = "0:00";
-      if (plDur) plDur.textContent = "0:00";
-    }
-
-    function togglePlay() {
-      if (audio.paused) {
-        audio.play().then(() => { isPlaying = true; if (playBtn) playBtn.textContent = "⏸"; }).catch(() => {});
-      } else {
-        audio.pause(); isPlaying = false; if (playBtn) playBtn.textContent = "▶";
-      }
-    }
-    function nextTrack() { loadTrack(tIdx + 1); if (isPlaying) audio.play().catch(() => {}); }
-    function prevTrack() { loadTrack(tIdx - 1); if (isPlaying) audio.play().catch(() => {}); }
-    function setVol(v: string) { audio.volume = parseFloat(v); }
-    function fmtT(s: number) { return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0"); }
-    function seekAudio(e: MouseEvent) {
-      const el = document.getElementById("plProg");
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      if (audio.duration) audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
-    }
-
-    audio.addEventListener("timeupdate", () => {
-      if (!audio.duration) return;
-      const plBar = document.getElementById("plBar") as HTMLElement;
-      const plCur = document.getElementById("plCur");
-      if (plBar) plBar.style.width = (audio.currentTime / audio.duration * 100) + "%";
-      if (plCur) plCur.textContent = fmtT(audio.currentTime);
-    });
-    audio.addEventListener("loadedmetadata", () => {
-      const plDur = document.getElementById("plDur");
-      if (plDur) plDur.textContent = fmtT(audio.duration);
-    });
-    audio.addEventListener("ended", nextTrack);
-    audio.volume = 0.7;
-    loadTrack(0);
-
-    window.togglePlay = togglePlay;
-    window.nextTrack = nextTrack;
-    window.prevTrack = prevTrack;
-    window.setVol = setVol;
-    window.seekAudio = seekAudio as (e: MouseEvent) => void;
-
     /* ══ CART ══ */
     const cart: { name: string; price: number }[] = [];
 
@@ -405,43 +325,16 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* ── MUSIC PLAYER ── */}
+      {/* ── SPOTIFY PLAYER ── */}
       <div className="player">
-        <div className="np-dot"></div>
-        <div className="pl-info">
-          <div className="pl-track" id="plTrack">Select a track…</div>
-          <div className="pl-artist">bebot playlist</div>
-        </div>
-        <div className="pl-prog-wrap">
-          <div
-            className="pl-prog"
-            id="plProg"
-            onClick={(e) => window.seekAudio(e.nativeEvent)}
-          >
-            <div className="pl-bar" id="plBar"></div>
-          </div>
-          <div className="pl-times">
-            <span id="plCur">0:00</span>
-            <span id="plDur">0:00</span>
-          </div>
-        </div>
-        <div className="pl-ctrl">
-          <button className="pl-btn" onClick={() => window.prevTrack()} title="Prev">⏮</button>
-          <button className="pl-btn pl-play" id="playBtn" onClick={() => window.togglePlay()} title="Play">▶</button>
-          <button className="pl-btn" onClick={() => window.nextTrack()} title="Next">⏭</button>
-        </div>
-        <div className="pl-vol">
-          <span className="pl-vol-ico">♪</span>
-          <input
-            type="range"
-            className="vol"
-            min="0"
-            max="1"
-            step="0.01"
-            defaultValue="0.7"
-            onInput={(e) => window.setVol((e.target as HTMLInputElement).value)}
-          />
-        </div>
+        <iframe
+          src="https://open.spotify.com/embed/playlist/5fer54vyXk9avMBGtMwX62?utm_source=generator&theme=0"
+          width="100%"
+          height="80"
+          frameBorder={0}
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
       </div>
 
       {/* ── CART DRAWER ── */}
@@ -467,7 +360,6 @@ export default function Home() {
         </div>
       </div>
 
-      <audio id="audio" preload="auto"></audio>
     </>
   );
 }
