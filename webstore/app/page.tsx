@@ -42,13 +42,7 @@ export default function Home() {
       if (priceEl) priceEl.textContent = "₱" + parseInt(price).toLocaleString();
       if (nameInput) nameInput.value = "";
       if (phoneInput) phoneInput.value = "";
-      const itemStock = inventory[name] || {};
-      document.querySelectorAll<HTMLButtonElement>(".rv-sz").forEach(b => {
-        b.classList.remove("on");
-        const sz = b.dataset.size || "";
-        const qty = itemStock[sz] ?? 0;
-        b.innerHTML = `${sz}<span class="rv-sz-qty">${qty}</span>`;
-      });
+      document.querySelectorAll(".rv-sz").forEach(b => b.classList.remove("on"));
       const success = document.getElementById("rvSuccess");
       const form = document.getElementById("rvForm");
       if (success) success.style.display = "none";
