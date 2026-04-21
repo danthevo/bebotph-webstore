@@ -647,8 +647,10 @@ input[type=range].vol { width: 60px; height: 3px; accent-color: var(--pk); curso
   flex: 1; padding: .5rem 0; border-radius: 8px;
   border: 1.5px solid var(--bd); font-size: 11px; font-weight: 700;
   color: var(--bk); transition: .15s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
 .rv-sz:hover, .rv-sz.on { background: var(--bk); color: var(--cr); border-color: var(--bk); }
+.rv-sz-qty { font-size: 9px; font-weight: 400; opacity: .6; font-family: var(--fm); }
 .rv-input {
   width: 100%; padding: .6rem .85rem; border-radius: 8px;
   border: 1.5px solid var(--bd); font-size: 13px; color: var(--bk);

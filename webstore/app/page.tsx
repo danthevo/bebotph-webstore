@@ -24,6 +24,10 @@ export default function Home() {
     }
 
     /* ══ RESERVATION ══ */
+    const inventory: Record<string, Record<string, number>> = {
+      "bebot Baby Tee": { S: 65, M: 80, L: 75, XL: 15 },
+      "bebot Tank":     { S: 45, M: 70, L: 65, XL: 45 },
+    };
     let rvItem = { name: "", price: "" };
     let rvSize = "";
 
@@ -38,7 +42,13 @@ export default function Home() {
       if (priceEl) priceEl.textContent = "₱" + parseInt(price).toLocaleString();
       if (nameInput) nameInput.value = "";
       if (phoneInput) phoneInput.value = "";
-      document.querySelectorAll(".rv-sz").forEach(b => b.classList.remove("on"));
+      const itemStock = inventory[name] || {};
+      document.querySelectorAll<HTMLButtonElement>(".rv-sz").forEach(b => {
+        b.classList.remove("on");
+        const sz = b.dataset.size || "";
+        const qty = itemStock[sz] ?? 0;
+        b.innerHTML = `${sz}<span class="rv-sz-qty">${qty}</span>`;
+      });
       const success = document.getElementById("rvSuccess");
       const form = document.getElementById("rvForm");
       if (success) success.style.display = "none";
@@ -380,7 +390,7 @@ export default function Home() {
               <label className="rv-label">Size</label>
               <div className="rv-sizes">
                 {["S","M","L","XL"].map(s => (
-                  <button key={s} className="rv-sz" onClick={(e) => window.selectSize(e.currentTarget as HTMLButtonElement, s)}>{s}</button>
+                  <button key={s} className="rv-sz" data-size={s} onClick={(e) => window.selectSize(e.currentTarget as HTMLButtonElement, s)}>{s}</button>
                 ))}
               </div>
             </div>
