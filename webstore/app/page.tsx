@@ -100,31 +100,34 @@ export default function Home() {
       submitBtns.forEach(b => { b.disabled = true; b.style.opacity = ".5"; });
 
       const payload = { name, contact, size: rvSize, item: rvItem.name, price: rvItem.price, type, event: "April 25 2026" };
+      const capturedSize = rvSize;
+      const capturedItem = { ...rvItem };
 
+      // Show success immediately — POST runs in background
+      const success = document.getElementById("rvSuccess");
+      const form = document.getElementById("rvForm");
+      const typeEl = document.getElementById("rvSuccessType");
+      const msgEl = document.getElementById("rvSuccessMsg");
+      submitBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
+      if (form) form.style.display = "none";
+      if (success) success.style.display = "flex";
+      if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! ✦" : "You're on the waitlist! ✦";
+      if (msgEl) msgEl.innerHTML = type === "pickup"
+        ? `<strong>${capturedItem.name}</strong> · Size ${capturedSize}<br><br>Bebot Party · April 25, 2026<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm<br><br>GCash / Card at the door — see you there!`
+        : `<strong>${capturedItem.name}</strong> · Size ${capturedSize}<br><br>We'll reach out via ${contact.includes("@") ? "email" : "Viber/phone"} to confirm payment details.`;
+
+      // Background POST — revert only if sold_out
       fetch(APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
         .then(r => r.json())
         .then(data => {
-          submitBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
           if (data.ok === false && data.reason === "sold_out") {
-            if (errEl) { errEl.textContent = `Sorry, ${rvItem.name} in size ${rvSize} is fully reserved.`; errEl.style.display = "block"; }
-            fetchAvailability().then(() => openReserve(rvItem.name, rvItem.price));
-            return;
+            if (success) success.style.display = "none";
+            if (form) form.style.display = "block";
+            if (errEl) { errEl.textContent = `Sorry, ${capturedItem.name} size ${capturedSize} pickup is fully reserved. You can still join the waitlist.`; errEl.style.display = "block"; }
+            fetchAvailability();
           }
-          const success = document.getElementById("rvSuccess");
-          const form = document.getElementById("rvForm");
-          const typeEl = document.getElementById("rvSuccessType");
-          const msgEl = document.getElementById("rvSuccessMsg");
-          if (form) form.style.display = "none";
-          if (success) success.style.display = "flex";
-          if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! ✦" : "You're on the waitlist! ✦";
-          if (msgEl) msgEl.innerHTML = type === "pickup"
-            ? `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>Bebot Party · April 25, 2026<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm<br><br>GCash / Card at the door — see you there!`
-            : `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>We'll reach out via ${contact.includes("@") ? "email" : "Viber/phone"} to confirm payment details.`;
         })
-        .catch(() => {
-          submitBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
-          if (errEl) { errEl.textContent = "Something went wrong. Please try again."; errEl.style.display = "block"; }
-        });
+        .catch(() => { /* silent — user already saw success */ });
     }
 
     window.openReserve = openReserve;
