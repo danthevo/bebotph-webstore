@@ -25,11 +25,22 @@ export default function Home() {
 
     /* ══ RESERVATION ══ */
     const inventory: Record<string, Record<string, number>> = {
-      "bebot Baby Tee": { S: 65, M: 80, L: 75, XL: 15 },
-      "bebot Tank":     { S: 45, M: 70, L: 65, XL: 45 },
+      "bebot Baby Tee": { S: 65, M: 80, L: 75, XL: 15, XXL: 15 },
+      "bebot Tank":     { S: 45, M: 70, L: 65, XL: 45, XXL: 25 },
     };
+    let availability: Record<string, Record<string, { available: boolean; remaining: number }>> = {};
     let rvItem = { name: "", price: "" };
     let rvSize = "";
+
+
+    async function fetchAvailability() {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL);
+        const data = await res.json();
+        if (data.ok) availability = data.availability;
+      } catch { /* silent — sizes stay enabled */ }
+    }
+    fetchAvailability();
 
     function openReserve(name: string, price: string) {
       rvItem = { name, price };
@@ -42,13 +53,28 @@ export default function Home() {
       if (priceEl) priceEl.textContent = "₱" + parseInt(price).toLocaleString();
       if (nameInput) nameInput.value = "";
       if (phoneInput) phoneInput.value = "";
-      document.querySelectorAll(".rv-sz").forEach(b => b.classList.remove("on"));
+      const itemAvail = availability[name] || {};
+      document.querySelectorAll<HTMLButtonElement>(".rv-sz").forEach(b => {
+        b.classList.remove("on");
+        const sz = b.dataset.size || "";
+        const avail = itemAvail[sz];
+        if (avail && !avail.available) {
+          b.disabled = true;
+          b.classList.add("sz-sold-out");
+        } else {
+          b.disabled = false;
+          b.classList.remove("sz-sold-out");
+        }
+      });
+      const errEl = document.getElementById("rvErr");
+      if (errEl) errEl.style.display = "none";
       const success = document.getElementById("rvSuccess");
       const form = document.getElementById("rvForm");
       if (success) success.style.display = "none";
       if (form) form.style.display = "block";
       document.getElementById("rdrawer")?.classList.add("open");
       document.getElementById("overlay")?.classList.add("on");
+      fetchAvailability(); // refresh for next open
     }
     function closeReserve() {
       document.getElementById("rdrawer")?.classList.remove("open");
@@ -78,19 +104,28 @@ export default function Home() {
       const payload = { name, contact, size: rvSize, item: rvItem.name, price: rvItem.price, type, event: "April 25 2026" };
 
       fetch(APPS_SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
-        .catch(() => {/* silent fail — still show success */})
-        .finally(() => {
+        .then(r => r.json())
+        .then(data => {
           submitBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
+          if (data.ok === false && data.reason === "sold_out") {
+            if (errEl) { errEl.textContent = `Sorry, ${rvItem.name} in size ${rvSize} is fully reserved.`; errEl.style.display = "block"; }
+            fetchAvailability().then(() => openReserve(rvItem.name, rvItem.price));
+            return;
+          }
           const success = document.getElementById("rvSuccess");
           const form = document.getElementById("rvForm");
           const typeEl = document.getElementById("rvSuccessType");
           const msgEl = document.getElementById("rvSuccessMsg");
           if (form) form.style.display = "none";
           if (success) success.style.display = "flex";
-          if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! 🎉" : "You're on the waitlist! ✦";
+          if (typeEl) typeEl.textContent = type === "pickup" ? "You're reserved! ✦" : "You're on the waitlist! ✦";
           if (msgEl) msgEl.innerHTML = type === "pickup"
             ? `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>Bebot Party · April 25, 2026<br>Annex · 5638 Don Pedro, Makati City<br>1209 Metro Manila · After 5pm<br><br>GCash / Card at the door — see you there!`
             : `<strong>${rvItem.name}</strong> · Size ${rvSize}<br><br>We'll reach out via ${contact.includes("@") ? "email" : "Viber/phone"} to confirm payment details.`;
+        })
+        .catch(() => {
+          submitBtns.forEach(b => { b.disabled = false; b.style.opacity = "1"; });
+          if (errEl) { errEl.textContent = "Something went wrong. Please try again."; errEl.style.display = "block"; }
         });
     }
 
@@ -383,7 +418,7 @@ export default function Home() {
             <div className="rv-field">
               <label className="rv-label">Size</label>
               <div className="rv-sizes">
-                {["S","M","L","XL"].map(s => (
+                {["S","M","L","XL","XXL"].map(s => (
                   <button key={s} className="rv-sz" data-size={s} onClick={(e) => window.selectSize(e.currentTarget as HTMLButtonElement, s)}>{s}</button>
                 ))}
               </div>
