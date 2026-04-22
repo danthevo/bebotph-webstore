@@ -59,10 +59,8 @@ export default function Home() {
         const sz = b.dataset.size || "";
         const avail = itemAvail[sz];
         if (avail && !avail.available) {
-          b.disabled = true;
           b.classList.add("sz-sold-out");
         } else {
-          b.disabled = false;
           b.classList.remove("sz-sold-out");
         }
       });
