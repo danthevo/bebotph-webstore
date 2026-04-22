@@ -422,7 +422,18 @@ export default function Home() {
           <div className="rv-success-icon">✦</div>
           <div className="rv-success-type" id="rvSuccessType"></div>
           <div className="rv-success-msg" id="rvSuccessMsg"></div>
-          <button className="rv-btn rv-pickup" style={{marginTop:"1.5rem"}} onClick={() => window.closeReserve()}>Done</button>
+          <button className="rv-btn rv-pickup" style={{marginTop:"1.5rem"}} onClick={() => {
+            const form = document.getElementById("rvForm");
+            const success = document.getElementById("rvSuccess");
+            if (form) form.style.display = "block";
+            if (success) success.style.display = "none";
+            document.querySelectorAll(".rv-sz").forEach(b => b.classList.remove("on"));
+            const ni = document.getElementById("rvNameInput") as HTMLInputElement|null;
+            const pi = document.getElementById("rvPhone") as HTMLInputElement|null;
+            if (ni) ni.value = "";
+            if (pi) pi.value = "";
+          }}>Reserve another →</button>
+          <button className="rv-btn rv-waitlist" style={{marginTop:".5rem"}} onClick={() => window.closeReserve()}>Done</button>
         </div>
       </div>
 
