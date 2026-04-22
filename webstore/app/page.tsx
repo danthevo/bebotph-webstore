@@ -59,7 +59,7 @@ export default function Home() {
       document.querySelectorAll(".rv-sz").forEach(b => b.classList.remove("on"));
       btn.classList.add("on");
     }
-    const APPS_SCRIPT_URL = "https://script.google.com/a/macros/bebot.ph/s/AKfycbz8Ov_lEm4DRgtDvZ0ZrGk8qEd9o8qxSRmXsHisB76GUOCDV1CLYYC3408ZWTcoXqrmUA/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz8Ov_lEm4DRgtDvZ0ZrGk8qEd9o8qxSRmXsHisB76GUOCDV1CLYYC3408ZWTcoXqrmUA/exec";
 
     function submitReserve(type: string) {
       const nameInput = document.getElementById("rvNameInput") as HTMLInputElement;
